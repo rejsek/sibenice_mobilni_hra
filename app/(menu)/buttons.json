@@ -1,0 +1,21 @@
+{
+    "difficultyLevels": [
+      { "name": "Začátečník", "color": "#2563EB" },
+      { "name": "Pokročilý", "color": "#D97706" },
+      { "name": "Expert", "color": "#DC2626" }
+    ],
+    "topics": [
+      { "name": "Zvířata", "color": "#EA580C" },
+      { "name": "Cestování", "color": "#9333EA" },
+      { "name": "Jídla", "color": "#EC4899" },
+      { "name": "Sporty", "color": "#0D9488" },
+      { "name": "Auta", "color": "#6B7280" },
+      { "name": "Technologie", "color": "#2563EB" },
+      { "name": "Filmy", "color": "#D97706" },
+      { "name": "Historie", "color": "#DC2626" },
+      { "name": "Hudba", "color": "#10B981" },
+      { "name": "Věda", "color": "#9333EA" },
+      { "name": "Vesmír", "color": "#F59E0B" }
+    ]
+  }
+  

@@ -1,0 +1,422 @@
+{
+    "Zvířata": {
+        "Začátečník": [
+            { "word": "PES", "hint": "Domácí mazlíček, věrný přítel člověka" },
+            { "word": "KOČKA", "hint": "Šelma, která ráda spí a chytá myši" },
+            { "word": "LEV", "hint": "Král džungle s mohutnou hřívou" },
+            { "word": "KŮŇ", "hint": "Domestikované zvíře používané k jízdě" },
+            { "word": "KRÁLÍK", "hint": "Malé zvíře s dlouhýma ušima" },
+            { "word": "RYBA", "hint": "Vodní tvor, dýchá žábrami" },
+            { "word": "OVCE", "hint": "Zvíře s vlnitou srstí" },
+            { "word": "KOZA", "hint": "Domácí zvíře, které umí šplhat" },
+            { "word": "MEDVĚD", "hint": "Velký savec, miluje med" },
+            { "word": "SLON", "hint": "Největší suchozemský savec, má chobot" }
+        ],
+        "Pokročilý": [
+            { "word": "TYGR", "hint": "Velká šelma s pruhovanou srstí" },
+            { "word": "VYDRA", "hint": "Vodní savec, rád plave a loví ryby" },
+            { "word": "MOTÝL", "hint": "Barevný hmyz s křídly" },
+            { "word": "BOBR", "hint": "Staví hráze a má plochý ocas" },
+            { "word": "SOVA", "hint": "Noční pták s dobrým zrakem" },
+            { "word": "KOBYLKA", "hint": "Hmyz, který skáče a cvrliká" },
+            { "word": "HROCH", "hint": "Obří savec žijící ve vodě" },
+            { "word": "ŽIRAF", "hint": "Zvíře s nejdelším krkem na světě" },
+            { "word": "PAPOUŠEK", "hint": "Barevný pták, umí napodobit lidskou řeč" },
+            { "word": "PANDA", "hint": "Černobílý savec, živí se bambusem" }
+        ],
+        "Expert": [
+            { "word": "KROKODÝL", "hint": "Nebezpečný plaz s ostrými zuby" },
+            { "word": "GORILA", "hint": "Silný primát žijící v džungli" },
+            { "word": "NOSOROŽEC", "hint": "Velké zvíře s rohem na nose" },
+            { "word": "LEMUR", "hint": "Noční primát s velkýma očima" },
+            { "word": "VODOUCH", "hint": "Jediný pavouk, který žije pod vodou" },
+            { "word": "CHAMELEON", "hint": "Mění barvu podle prostředí" },
+            { "word": "VLK", "hint": "Divoký předek domácího psa" },
+            { "word": "ORANGUTAN", "hint": "Lidoop s dlouhými pažemi" },
+            { "word": "MANGUSTA", "hint": "Známá lovem hadů" },
+            { "word": "ALBATROS", "hint": "Mořský pták s největším rozpětím křídel" }
+        ]
+    },
+    
+    "Cestování": {
+        "Začátečník": [
+            { "word": "MAPA", "hint": "Pomáhá s orientací v neznámých místech" },
+            { "word": "BUS", "hint": "Veřejný dopravní prostředek na kolech" },
+            { "word": "VLAK", "hint": "Jezdí po kolejích" },
+            { "word": "AUTO", "hint": "Dopravní prostředek na čtyřech kolech" },
+            { "word": "KEMP", "hint": "Místo na stanování" },
+            { "word": "LOĎ", "hint": "Plovoucí dopravní prostředek" },
+            { "word": "TUNEL", "hint": "Podzemní cesta pro auta nebo vlaky" },
+            { "word": "CESTA", "hint": "Spojuje dvě místa" },
+            { "word": "PAS", "hint": "Doklad potřebný pro cestování do jiných zemí" },
+            { "word": "PLÁŽ", "hint": "Písčité místo u moře" }
+        ],
+        "Pokročilý": [
+            { "word": "LETADLO", "hint": "Dopravní prostředek, který létá" },
+            { "word": "KOMPAS", "hint": "Pomůcka pro navigaci a orientaci" },
+            { "word": "HRANICE", "hint": "Odděluje státy" },
+            { "word": "PŘÍRUČNÍ", "hint": "Typ zavazadla do letadla" },
+            { "word": "EXPEDICE", "hint": "Výprava za dobrodružstvím" },
+            { "word": "HOTEL", "hint": "Místo pro přenocování" },
+            { "word": "TURISTIKA", "hint": "Aktivita spojená s objevováním míst" },
+            { "word": "VISA", "hint": "Oficiální povolení ke vstupu do země" },
+            { "word": "HOSTEL", "hint": "Levné ubytování pro cestovatele" },
+            { "word": "PRŮVODCE", "hint": "Člověk nebo kniha, co pomáhá na cestách" }
+        ],
+        "Expert": [
+            { "word": "DESTINACE", "hint": "Cílové místo cestování" },
+            { "word": "JETLAG", "hint": "Únava po dlouhém letu" },
+            { "word": "PILOT", "hint": "Řídí letadlo" },
+            { "word": "NAVIGACE", "hint": "Technologie pro určování polohy" },
+            { "word": "CARAVAN", "hint": "Mobilní domov na kolech" },
+            { "word": "PASOVKA", "hint": "Kontrola dokladů na letišti" },
+            { "word": "CLOUDSURFING", "hint": "Levné cestování přes komunitu lidí" },
+            { "word": "RUKSAK", "hint": "Nezbytný pro turistiku" },
+            { "word": "LÁVKY", "hint": "Úzké mosty přes vodu" },
+            { "word": "TROPIKY", "hint": "Oblast kolem rovníku" }
+        ]
+    },
+
+    "Jídla": {
+        "Začátečník": [
+            { "word": "CHLEBA", "hint": "Základní pečivo, často s máslem" },
+            { "word": "MLÉKO", "hint": "Bílý nápoj od krav" },
+            { "word": "JABLKO", "hint": "Ovoce, které může být červené nebo zelené" },
+            { "word": "SŮL", "hint": "Běžné koření, které zvýrazňuje chuť" },
+            { "word": "VAJÍČKO", "hint": "Často se vaří na snídani, má žloutek" },
+            { "word": "MASO", "hint": "Hlavní složka mnoha pokrmů, pochází ze zvířat" },
+            { "word": "RYŽE", "hint": "Bílá nebo hnědá příloha z Asie" },
+            { "word": "SÝR", "hint": "Mléčný výrobek, často na pizze" },
+            { "word": "MED", "hint": "Sladká látka od včel" },
+            { "word": "BRAMBORY", "hint": "Používají se na kaši, hranolky i pečení" }
+        ],
+        "Pokročilý": [
+            { "word": "PEČIVO", "hint": "Skupina jídel včetně chleba a rohlíků" },
+            { "word": "ČOKOLÁDA", "hint": "Sladkost vyráběná z kakaa" },
+            { "word": "TĚSTOVINY", "hint": "Italská specialita, existuje mnoho tvarů" },
+            { "word": "OMÁČKA", "hint": "Tekutá složka pokrmů, často k masu" },
+            { "word": "KÁVA", "hint": "Nápoj s kofeinem, oblíbený ráno" },
+            { "word": "GRILOVÁNÍ", "hint": "Příprava jídla nad otevřeným ohněm" },
+            { "word": "KAPUSTA", "hint": "Zelenina podobná zelí" },
+            { "word": "POLÉVKA", "hint": "Tekutý pokrm, často se jí lžící" },
+            { "word": "KOŘENÍ", "hint": "Dodává jídlu chuť a vůni" },
+            { "word": "RIZOTO", "hint": "Italské jídlo z rýže" }
+        ],
+        "Expert": [
+            { "word": "FERMENTACE", "hint": "Proces kvašení používaný při výrobě jogurtu nebo kimchi" },
+            { "word": "GAZPACHO", "hint": "Studená španělská polévka z rajčat" },
+            { "word": "SOUFFLÉ", "hint": "Francouzský nadýchaný pokrm z vajec" },
+            { "word": "BÉARNAISE", "hint": "Tradiční francouzská omáčka s estragonem" },
+            { "word": "KOMBUCHA", "hint": "Fermentovaný čajový nápoj" },
+            { "word": "TEMPURA", "hint": "Japonský pokrm smažený v těstíčku" },
+            { "word": "TRUFFLE", "hint": "Drahou houba používaná v gastronomii" },
+            { "word": "MASALA", "hint": "Indická směs koření" },
+            { "word": "CONFIT", "hint": "Technika pomalého vaření v tuku" },
+            { "word": "TAPAS", "hint": "Malé španělské občerstvení" }
+        ]
+    },
+
+    "Sporty": {
+        "Začátečník": [
+            { "word": "FOTBAL", "hint": "Hra s míčem, kde se střílí góly" },
+            { "word": "HOKEJ", "hint": "Hraje se na ledě s pukem" },
+            { "word": "BĚH", "hint": "Rychlý pohyb po vlastních nohách" },
+            { "word": "PLAVÁNÍ", "hint": "Pohyb ve vodě pomocí rukou a nohou" },
+            { "word": "CYKLISTIKA", "hint": "Jízda na dvou kolech" },
+            { "word": "TENIS", "hint": "Hra s raketou a míčkem na kurtu" },
+            { "word": "BASKETBAL", "hint": "Hra s míčem, kde se hází na koš" },
+            { "word": "LYŽOVÁNÍ", "hint": "Zimní sport na sněhu" },
+            { "word": "JUDO", "hint": "Japonské bojové umění" },
+            { "word": "GOLF", "hint": "Hra s holemi a míčky na velkém hřišti" }
+        ],
+        "Pokročilý": [
+            { "word": "MARATON", "hint": "Dlouhý běžecký závod na 42 km" },
+            { "word": "SNOWBOARD", "hint": "Jízda na prkně po sněhu" },
+            { "word": "VZPÍRÁNÍ", "hint": "Sport, kde se zvedají těžká závaží" },
+            { "word": "SURFOVÁNÍ", "hint": "Jízda na vlnách v oceánu" },
+            { "word": "VESLOVÁNÍ", "hint": "Sport na vodě s pádly" },
+            { "word": "FLOORBALL", "hint": "Hokej hraný v hale s plastovým míčkem" },
+            { "word": "ŠERM", "hint": "Souboj s meči na body" },
+            { "word": "TROJBOJ", "hint": "Silový sport s třemi disciplínami" },
+            { "word": "KANOISTIKA", "hint": "Vodní sport s pádlem na kanoi" },
+            { "word": "BIATLON", "hint": "Zimní sport kombinující běh na lyžích a střelbu" }
+        ],
+        "Expert": [
+            { "word": "SKIALPINISMUS", "hint": "Spojuje lyžování a horolezectví" },
+            { "word": "PARKOUR", "hint": "Překonávání překážek v městském prostředí" },
+            { "word": "SKELETON", "hint": "Zimní sport podobný bobům, ale hlavou napřed" },
+            { "word": "KRAVMAGA", "hint": "Izraelský bojový systém sebeobrany" },
+            { "word": "DECATHLON", "hint": "Desetibojařská atletická disciplína" },
+            { "word": "ULTRAMARATON", "hint": "Běh delší než klasický maraton" },
+            { "word": "BASEJUMPING", "hint": "Skoky s padákem z pevných objektů" },
+            { "word": "WATERPOLO", "hint": "Týmový sport hraný ve vodě" },
+            { "word": "FREECLIMBING", "hint": "Lezení bez použití lana" },
+            { "word": "TRIATLON", "hint": "Kombinace plavání, cyklistiky a běhu" }
+        ]
+    },
+
+    "Auta": {
+        "Začátečník": [
+            { "word": "VOLANT", "hint": "Používá se k řízení auta" },
+            { "word": "BRZDA", "hint": "Používá se k zastavení vozidla" },
+            { "word": "MOTOR", "hint": "Srdce auta, pohání ho" },
+            { "word": "BENZÍN", "hint": "Palivo pro spalovací motory" },
+            { "word": "KOLA", "hint": "Část auta, která se otáčí" },
+            { "word": "SVĚTLA", "hint": "Používají se k osvětlení cesty" },
+            { "word": "KAPOTA", "hint": "Zakrytí motorového prostoru" },
+            { "word": "SPZ", "hint": "Identifikační značka vozidla" },
+            { "word": "SEDADLO", "hint": "Místo, kde sedí řidič a pasažéři" },
+            { "word": "KLÍČ", "hint": "Používá se k odemknutí a nastartování auta" }
+        ],
+        "Pokročilý": [
+            { "word": "TURBO", "hint": "Zařízení zvyšující výkon motoru" },
+            { "word": "DIFERENCIÁL", "hint": "Umožňuje kolům otáčet se různou rychlostí" },
+            { "word": "SPOJKA", "hint": "Umožňuje změnu převodového stupně" },
+            { "word": "AIRBAG", "hint": "Bezpečnostní prvek při nehodě" },
+            { "word": "PALUBKA", "hint": "Přístrojová deska auta" },
+            { "word": "AUTOMAT", "hint": "Typ převodovky bez spojkového pedálu" },
+            { "word": "HYBRID", "hint": "Auto kombinující spalovací a elektrický motor" },
+            { "word": "ALTERNÁTOR", "hint": "Dobíjí baterii auta během jízdy" },
+            { "word": "KATALYZÁTOR", "hint": "Zařízení snižující emise výfukových plynů" },
+            { "word": "ČIPTUNING", "hint": "Úprava softwaru pro zvýšení výkonu motoru" }
+        ],
+        "Expert": [
+            { "word": "LSD", "hint": "Typ diferenciálu zlepšující trakci" },
+            { "word": "KARBURÁTOR", "hint": "Směšovací zařízení u starších motorů" },
+            { "word": "PNEUMATIKY", "hint": "Jediný bod kontaktu auta se silnicí" },
+            { "word": "MONOCOQUE", "hint": "Konstrukční řešení karoserie bez rámu" },
+            { "word": "TORSEN", "hint": "Typ samosvorného diferenciálu" },
+            { "word": "OCTANOVÉČÍSLO", "hint": "Udává kvalitu benzínu" },
+            { "word": "VALVETRONIC", "hint": "Variabilní systém ovládání ventilů BMW" },
+            { "word": "DYNO", "hint": "Zařízení na měření výkonu motoru" },
+            { "word": "COEFFICIENTDRAG", "hint": "Aerodynamický odpor vozidla" },
+            { "word": "ACTIVEAERO", "hint": "Technologie měnící aerodynamiku auta" }
+        ]
+    },
+    
+    "Technologie": {
+        "Začátečník": [
+            { "word": "PC", "hint": "Zkratka pro osobní počítač" },
+            { "word": "APP", "hint": "Krátké označení pro aplikaci" },
+            { "word": "NET", "hint": "Zkrácený název pro internet" },
+            { "word": "WEB", "hint": "Prohlížíme ho na internetu" },
+            { "word": "KABEL", "hint": "Spojuje zařízení" },
+            { "word": "USB", "hint": "Běžný konektor pro přenos dat" },
+            { "word": "WIFI", "hint": "Bezdrátové připojení k internetu" },
+            { "word": "DATA", "hint": "Informace uložené v počítači" },
+            { "word": "CPU", "hint": "Mozek počítače" },
+            { "word": "MONITOR", "hint": "Zobrazuje obraz z počítače" }
+        ],
+        "Pokročilý": [
+            { "word": "LAPTOP", "hint": "Přenosný počítač" },
+            { "word": "ROBOT", "hint": "Stroj, který může vykonávat různé úkoly" }
+        ],
+        "Expert": [
+            { "word": "BLOCKCHAIN", "hint": "Technologie za kryptoměnami" },
+            { "word": "ARTIFICIAL", "hint": "Slovo související s umělou inteligencí" },
+            { "word": "ALGORITHM", "hint": "Postup pro řešení problémů v IT" },
+            { "word": "CYBERSECURITY", "hint": "Ochrana dat a sítí před útoky" },
+            { "word": "MACHINELEARNING", "hint": "Oblast AI, kde se systémy učí z dat" },
+            { "word": "QUANTUMCOMPUTING", "hint": "Pokročilá technologie využívající kvantové bity" },
+            { "word": "BIGDATA", "hint": "Zpracování obrovských objemů dat" },
+            { "word": "VIRTUALREALITY", "hint": "Simulované prostředí zobrazované pomocí speciálních brýlí" },
+            { "word": "AUGMENTEDREALITY", "hint": "Technologie spojující reálný a virtuální svět" },
+            { "word": "DEEPLEARNING", "hint": "Nejpokročilejší forma strojového učení" }
+        ]
+    },
+
+    "Filmy": {
+        "Začátečník": [
+            { "word": "KINO", "hint": "Místo, kde se promítají filmy" },
+            { "word": "AKCE", "hint": "Žánr plný napětí a bojů" },
+            { "word": "HRDINA", "hint": "Hlavní postava filmu" },
+            { "word": "HEREC", "hint": "Osoba hrající ve filmu" },
+            { "word": "OSCAR", "hint": "Slavné filmové ocenění" },
+            { "word": "SCÉNÁŘ", "hint": "Text, podle kterého se natáčí film" },
+            { "word": "KAMERA", "hint": "Zařízení pro natáčení" },
+            { "word": "ANIMACE", "hint": "Filmy vytvářené pomocí kresby nebo počítače" },
+            { "word": "POSTAVA", "hint": "Vymyšlený hrdina filmu" },
+            { "word": "DABING", "hint": "Překlad filmových dialogů do jiného jazyka" }
+        ],
+        "Pokročilý": [
+            { "word": "REŽISÉR", "hint": "Osoba, která řídí natáčení filmu" },
+            { "word": "THRILLER", "hint": "Napínavý film plný záhad" },
+            { "word": "SCI-FI", "hint": "Žánr s mimozemšťany, roboty a budoucností" },
+            { "word": "KAMEO", "hint": "Krátká účast slavné osoby ve filmu" },
+            { "word": "HOROR", "hint": "Žánr filmu, který nahání strach" },
+            { "word": "SOUNDTRACK", "hint": "Hudba vytvořená pro film" },
+            { "word": "PREMIÉRA", "hint": "První uvedení filmu" },
+            { "word": "TRIKY", "hint": "Efekty přidávané do filmu" },
+            { "word": "PRODUCENT", "hint": "Osoba financující a řídící produkci filmu" },
+            { "word": "FESTIVAL", "hint": "Událost, kde se prezentují filmy" }
+        ],
+        "Expert": [
+            { "word": "KONTINUITA", "hint": "Důslednost při dodržování detailů mezi scénami" },
+            { "word": "MONTÁŽ", "hint": "Proces sestříhání filmových scén" },
+            { "word": "KULISY", "hint": "Vytvořené prostředí pro natáčení" },
+            { "word": "DOLLYSHOT", "hint": "Pohyb kamery na kolejnicích" },
+            { "word": "FILMOVÁNO", "hint": "Zaznamenáno na kameru" },
+            { "word": "FOKUS", "hint": "Ostření obrazu ve filmu" },
+            { "word": "STORYBOARD", "hint": "Sekvence obrázků pro plánování filmu" },
+            { "word": "OSCILOSKOP", "hint": "Zařízení pro kontrolu zvukové vlny při dabingu" },
+            { "word": "DOKUMENT", "hint": "Filmový žánr založený na skutečných událostech" },
+            { "word": "CINEMATOGRAFIE", "hint": "Umění a technika natáčení filmů" }
+        ]
+    },
+
+    "Historie": {
+        "Začátečník": [
+            { "word": "HRAD", "hint": "Středověká stavba pro ochranu" },
+            { "word": "KRÁL", "hint": "Vládce země v minulosti" },
+            { "word": "VÁLKA", "hint": "Ozbrojený konflikt mezi státy" },
+            { "word": "BITVA", "hint": "Vojenské střetnutí" },
+            { "word": "ŘÍM", "hint": "Slavná starověká říše" },
+            { "word": "MUZEUM", "hint": "Místo, kde jsou uchovány historické předměty" },
+            { "word": "PYRAMIDA", "hint": "Staroegyptská hrobka faraonů" },
+            { "word": "ERB", "hint": "Znak šlechtického rodu" },
+            { "word": "CÍSAŘ", "hint": "Vládce rozsáhlé říše" },
+            { "word": "MEČ", "hint": "Zbraň rytířů" }
+        ],
+        "Pokročilý": [
+            { "word": "KOLONIE", "hint": "Území pod nadvládou jiné země" },
+            { "word": "RENAISANCE", "hint": "Období obnovy umění a věd" },
+            { "word": "FARAON", "hint": "Vládce starověkého Egypta" },
+            { "word": "REVOLUCE", "hint": "Radikální změna společnosti" },
+            { "word": "ARISTOKRACIE", "hint": "Vládnoucí třída šlechty" },
+            { "word": "INKVIZICE", "hint": "Církevní soud pronásledující kacíře" },
+            { "word": "PRAVĚK", "hint": "Období před vynálezem písma" },
+            { "word": "VIKINGOVÉ", "hint": "Severští mořeplavci a bojovníci" },
+            { "word": "BAROKO", "hint": "Umělecký styl 17. století" },
+            { "word": "OSVÍCENSTVÍ", "hint": "Myšlenkové hnutí 18. století" }
+        ],
+        "Expert": [
+            { "word": "FEUDALISMUS", "hint": "Středověký systém vlády a majetku" },
+            { "word": "KŘÍŽOVÉVÝPRAVY", "hint": "Vojenské výpravy do Svaté země" },
+            { "word": "HUSITÉ", "hint": "Stoupenci Jana Husa bojující za reformu církve" },
+            { "word": "NAPOLEON", "hint": "Francouzský císař a vojevůdce" },
+            { "word": "IMPERIALISMUS", "hint": "Politika rozšiřování koloniální moci" },
+            { "word": "TŘICETILETÁVÁLKA", "hint": "Velký evropský konflikt 17. století" },
+            { "word": "GUILLOTINA", "hint": "Popravčí nástroj Francouzské revoluce" },
+            { "word": "STUDENÁVÁLKA", "hint": "Napětí mezi USA a SSSR ve 20. století" },
+            { "word": "MEROVEJCI", "hint": "První franská královská dynastie" },
+            { "word": "DŮLNÍREVOLUCE", "hint": "Období průmyslové změny v 19. století" }
+        ]
+    },
+
+    "Hudba": {
+        "Začátečník": [
+            { "word": "PIÁNO", "hint": "Hudební nástroj s klávesami" },
+            { "word": "KYTARA", "hint": "Nástroj se strunami" },
+            { "word": "BICÍ", "hint": "Souprava bubnů a činelů" },
+            { "word": "ZPĚV", "hint": "Hudební projev hlasem" },
+            { "word": "NOTA", "hint": "Základní prvek hudebního zápisu" },
+            { "word": "RAP", "hint": "Žánr s rytmickým mluveným textem" },
+            { "word": "ROCK", "hint": "Žánr využívající elektrickou kytaru" },
+            { "word": "KONCERT", "hint": "Živá hudební produkce" },
+            { "word": "POP", "hint": "Jeden z nejpopulárnějších žánrů" },
+            { "word": "DJ", "hint": "Osoba, která mixuje hudbu" }
+        ],
+        "Pokročilý": [
+            { "word": "SYNTHESIZER", "hint": "Elektronický hudební nástroj" },
+            { "word": "TENOR", "hint": "Typ mužského zpěvu" },
+            { "word": "AUDIO", "hint": "Zvukový záznam" },
+            { "word": "CHÓR", "hint": "Skupina zpěváků zpívající společně" },
+            { "word": "MELODIE", "hint": "Sekvence hudebních tónů" },
+            { "word": "OPERA", "hint": "Hudební divadelní představení" },
+            { "word": "SYMFONIE", "hint": "Dlouhá skladba pro orchestr" },
+            { "word": "METRONOM", "hint": "Zařízení udržující rytmus" },
+            { "word": "HARMONIE", "hint": "Souzvuk více tónů" },
+            { "word": "AKORD", "hint": "Skupina tří a více tónů hraných najednou" }
+        ],
+        "Expert": [
+            { "word": "MOTIV", "hint": "Krátký opakující se hudební prvek" },
+            { "word": "POLYFONIE", "hint": "Hudba s více současně znějícími melodiemi" },
+            { "word": "CRESCENDO", "hint": "Postupné zesilování hudby" },
+            { "word": "GLISSANDO", "hint": "Plynulý přechod mezi tóny" },
+            { "word": "KONTRAPUNKT", "hint": "Technika skládání s nezávislými hlasy" },
+            { "word": "TONÁLNÍ", "hint": "Hudba založená na stupnici" },
+            { "word": "OSTINATO", "hint": "Opakující se hudební vzorec" },
+            { "word": "DIMINUENDO", "hint": "Postupné zeslabování hudby" },
+            { "word": "MODULACE", "hint": "Změna tóniny skladby" },
+            { "word": "AKUSTIKA", "hint": "Věda o zvuku a jeho šíření" }
+        ]
+    },
+
+    "Věda": {
+        "Začátečník": [
+            { "word": "ATOM", "hint": "Základní stavební jednotka hmoty" },
+            { "word": "BUŇKA", "hint": "Základní jednotka života" },
+            { "word": "PLANETA", "hint": "Těleso obíhající kolem hvězdy" },
+            { "word": "ENERGIE", "hint": "Schopnost konat práci" },
+            { "word": "GRAVITACE", "hint": "Síla, která přitahuje objekty k sobě" },
+            { "word": "DNA", "hint": "Molekula nesoucí genetickou informaci" },
+            { "word": "BUNSENKA", "hint": "Laboratorní hořák" },
+            { "word": "KREV", "hint": "Tekutina cirkulující v těle" },
+            { "word": "MĚŘENÍ", "hint": "Zjišťování hodnot veličin" },
+            { "word": "TEPLOTA", "hint": "Vyjadřuje, jak je něco horké nebo studené" }
+        ],
+        "Pokročilý": [
+            { "word": "FOTOSYNTÉZA", "hint": "Proces, kterým rostliny produkují kyslík" },
+            { "word": "OXIDACE", "hint": "Chemická reakce s kyslíkem" },
+            { "word": "KONVEKCE", "hint": "Přenos tepla pohybem tekutin" },
+            { "word": "RELATIVITA", "hint": "Teorie Alberta Einsteina" },
+            { "word": "POLYMER", "hint": "Látka složená z dlouhých řetězců molekul" },
+            { "word": "KONDUKTIVITA", "hint": "Schopnost materiálu vést elektřinu" },
+            { "word": "NEURON", "hint": "Buňka přenášející signály v mozku" },
+            { "word": "ELEKTROMAGNETISMUS", "hint": "Síla spojující elektřinu a magnetismus" },
+            { "word": "SPEKTROSKOPIE", "hint": "Studium interakce světla s látkami" },
+            { "word": "KATALÝZA", "hint": "Proces urychlení chemické reakce" }
+        ],
+        "Expert": [
+            { "word": "ENTROPIE", "hint": "Míra neuspořádanosti systému" },
+            { "word": "SUPERPOZICE", "hint": "Princip kvantové mechaniky" },
+            { "word": "FERMION", "hint": "Typ částice podle kvantové mechaniky" },
+            { "word": "HELIOSFÉRA", "hint": "Oblast ovlivněná slunečním větrem" },
+            { "word": "SUPRAVODIVOST", "hint": "Stav materiálu bez elektrického odporu" },
+            { "word": "KVARK", "hint": "Elementární částice tvořící protony a neutrony" },
+            { "word": "PLASMATA", "hint": "Čtvrtý stav hmoty" },
+            { "word": "GRAVITAČNÍVLNY", "hint": "Prostorové vlny popsané Einsteinem" },
+            { "word": "NEUTRINO", "hint": "Lehká elementární částice" },
+            { "word": "BOSE-EINSTEINKONDENZÁT", "hint": "Speciální stav hmoty při extrémně nízkých teplotách" }
+        ]
+    },
+
+    "Vesmír": {
+        "Začátečník": [
+            { "word": "HVĚZDA", "hint": "Září na obloze, například Slunce" },
+            { "word": "MĚSÍC", "hint": "Přirozená družice Země" },
+            { "word": "SLUNCE", "hint": "Hvězda uprostřed naší soustavy" },
+            { "word": "PLANETA", "hint": "Obíhá kolem hvězdy" },
+            { "word": "KOMETA", "hint": "Ledové těleso s ohonem" },
+            { "word": "ASTEROID", "hint": "Malé kamenné těleso ve vesmíru" },
+            { "word": "DRUŽICE", "hint": "Umělé těleso obíhající kolem Země" },
+            { "word": "RUDÁPLANETA", "hint": "Jiný název pro Mars" },
+            { "word": "ATMOSFÉRA", "hint": "Vrstva plynů kolem planety" },
+            { "word": "ČERNÁDÍRA", "hint": "Oblast vesmíru s extrémní gravitací" }
+        ],
+        "Pokročilý": [
+            { "word": "GALAXIE", "hint": "Obrovský systém hvězd a planet" },
+            { "word": "SUPERNOVA", "hint": "Exploze hvězdy na konci jejího života" },
+            { "word": "MLÉČNÁDRÁHA", "hint": "Galaxie, ve které se nachází Země" },
+            { "word": "GRAVITACE", "hint": "Síla přitahující objekty k sobě" },
+            { "word": "KOSMONAUT", "hint": "Člověk cestující do vesmíru" },
+            { "word": "EXOPLANETA", "hint": "Planeta mimo Sluneční soustavu" },
+            { "word": "SLUNEČNÍVÍTR", "hint": "Proud nabitých částic ze Slunce" },
+            { "word": "PARSEC", "hint": "Jednotka vzdálenosti ve vesmíru" },
+            { "word": "SPEKTROSKOPIE", "hint": "Metoda studia světla hvězd" },
+            { "word": "OBĚŽNÁDRÁHA", "hint": "Dráha tělesa kolem jiného tělesa" }
+        ],
+        "Expert": [
+            { "word": "KVANTOVÁPĚNA", "hint": "Teoretická struktura prostoru na nejmenší škále" },
+            { "word": "NEUTRONOVÁHVĚZDA", "hint": "Zkollabovaná hvězda s extrémní hustotou" },
+            { "word": "GRAVITAČNÍVLNY", "hint": "Prostorové vlnění způsobené hmotou" },
+            { "word": "DARKMATTER", "hint": "Neviditelná hmota ve vesmíru" },
+            { "word": "SINGULARITA", "hint": "Bod s nekonečnou hustotou v černé díře" },
+            { "word": "BIGBANG", "hint": "Teorie vzniku vesmíru" },
+            { "word": "HELIOPAUZA", "hint": "Hranice sluneční soustavy" },
+            { "word": "KOSMOLOGIE", "hint": "Věda o původu a struktuře vesmíru" },
+            { "word": "WORMHOLE", "hint": "Hypotetický tunel ve vesmíru" },
+            { "word": "MULTIVERZUM", "hint": "Teorie existujícího množství vesmírů" }
+        ]
+    }
+}
