@@ -5,40 +5,46 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // 1) Typy pro JSON data
-type WordEntry = { word: string; hint: string; score: number };
+type WordEntry = { word: string; hint: string; score?: number };
 type WordsDataType = Record<string, Record<string, WordEntry[]>>;
 
 // 2) Import JSON dat
 import wordsJson from "../(game)/words.json";
-const wordsData = wordsJson as WordsDataType; // TODO - u kazdeho zaznamu v jsonu neni score
+const wordsData = wordsJson as WordsDataType;
 
 export default function LevelSelect() {
   const router = useRouter();
   const { topic, difficulty } = useLocalSearchParams();
   const [levelsData, setLevelsData] = useState<WordEntry[]>([]);
-  const [scores, setScores] = useState<number[]>([]);
+  const [userScores, setUserScores] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    try {
-      const safeTopic = Array.isArray(topic) ? topic[0] : topic;
-      const safeDifficulty = Array.isArray(difficulty) ? difficulty[0] : difficulty;
+    const loadData = async () => {
+      try {
+        // 1. Načtení zvoleného tématu a obtížnosti + příslušná data z JSONu
+        const safeTopic = Array.isArray(topic) ? topic[0] : topic;
+        const safeDifficulty = Array.isArray(difficulty) ? difficulty[0] : difficulty;
 
-      if (safeTopic && safeDifficulty && wordsData[safeTopic] && wordsData[safeTopic][safeDifficulty]) {
-        const selectedLevels = wordsData[safeTopic][safeDifficulty];
-        setLevelsData(selectedLevels);
+        if (
+          safeTopic &&
+          safeDifficulty &&
+          wordsData[safeTopic] &&
+          wordsData[safeTopic][safeDifficulty]
+        ) {
+          setLevelsData(wordsData[safeTopic][safeDifficulty]);
+        }
 
-        // Načíst skóre z AsyncStorage
-        AsyncStorage.getItem(`scores_${safeTopic}_${safeDifficulty}`).then((storedScores) => {
-          if (storedScores) {
-            setScores(JSON.parse(storedScores));
-          } else {
-            setScores(selectedLevels.map((level) => level.score)); // Výchozí skóre
-          }
-        });
+        // 2. Načtení skóre z AsyncStorage (klíč "score")
+        const storedScores = await AsyncStorage.getItem("score");
+        if (storedScores) {
+          setUserScores(JSON.parse(storedScores));
+        }
+      } catch (error) {
+        console.error("Chyba při načítání dat:", error);
       }
-    } catch (error) {
-      console.error("Chyba při načítání JSON souboru:", error);
-    }
+    };
+
+    loadData();
   }, [topic, difficulty]);
 
   const renderStars = (score: number) => {
@@ -66,6 +72,11 @@ export default function LevelSelect() {
                 const levelIndex = rowIndex * 2 + colIndex;
                 if (levelIndex >= levelsData.length) return null;
 
+                // Zjistíme slovo na tomto levelu
+                const currentWord = levelsData[levelIndex].word;
+                // Najdeme skóre z userScores
+                const currentScore = userScores[currentWord] || 0;
+
                 return (
                   <TouchableOpacity
                     key={levelIndex}
@@ -73,7 +84,7 @@ export default function LevelSelect() {
                     className="w-40 bg-gray-700 px-6 py-4 rounded-xl shadow-lg shadow-black items-center"
                   >
                     <Text className="text-white text-xl font-semibold">Level {levelIndex + 1}</Text>
-                    {renderStars(scores[levelIndex] || 0)}
+                    {renderStars(currentScore)}
                   </TouchableOpacity>
                 );
               })}

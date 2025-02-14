@@ -1,11 +1,11 @@
 {
     "Zvířata": {
         "Začátečník": [
-            { "word": "PES", "hint": "Domácí mazlíček, věrný přítel člověka", "score": 1 },
-            { "word": "KOČKA", "hint": "Šelma, která ráda spí a chytá myši", "score": 2 },
-            { "word": "LEV", "hint": "Král džungle s mohutnou hřívou", "score": 3 },
-            { "word": "KŮŇ", "hint": "Domestikované zvíře používané k jízdě", "score": 2 },
-            { "word": "KRÁLÍK", "hint": "Malé zvíře s dlouhýma ušima", "score": 1 },
+            { "word": "PES", "hint": "Domácí mazlíček, věrný přítel člověka" },
+            { "word": "KOČKA", "hint": "Šelma, která ráda spí a chytá myši" },
+            { "word": "LEV", "hint": "Král džungle s mohutnou hřívou" },
+            { "word": "KŮŇ", "hint": "Domestikované zvíře používané k jízdě" },
+            { "word": "KRÁLÍK", "hint": "Malé zvíře s dlouhýma ušima" },
             { "word": "RYBA", "hint": "Vodní tvor, dýchá žábrami" },
             { "word": "OVCE", "hint": "Zvíře s vlnitou srstí" },
             { "word": "KOZA", "hint": "Domácí zvíře, které umí šplhat" },

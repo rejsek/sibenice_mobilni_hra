@@ -1,52 +1,110 @@
 import { useState, useEffect, useRef } from "react";
-import { View, Text, TouchableOpacity, Dimensions, Animated, Modal } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  Animated,
+  Modal,
+  Vibration,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";
-import { Vibration } from "react-native";
 
-// 1) Typy pro JSON
-type WordEntry = { word: string; hint: string };
-type WordsDataType = Record<string, Record<string, WordEntry[]>>;
-
-// 2) Import JSON a přetypování
+// Import JSON s daty slov (neměníme ho přímo)
 import wordsJson from "./words.json";
-const wordsData = wordsJson as WordsDataType;
+const wordsData = wordsJson as Record<
+  string,
+  Record<string, { word: string; hint: string }[]>
+>;
+
+// Pomocná funkce pro výpočet skóre na základě počtu chyb
+function calculateScore(wrongCount: number): number {
+  if (wrongCount === 0) return 3;
+  if (wrongCount <= 2) return 2;
+  if (wrongCount <= 4) return 1;
+  return 0;
+}
 
 export default function GameScreen() {
   const router = useRouter();
-  const { topic, difficulty } = useLocalSearchParams();
+  const { topic, difficulty, level } = useLocalSearchParams();
   const screenWidth = Dimensions.get("window").width;
 
+  // Stavové proměnné
   const [targetWord, setTargetWord] = useState<string>("REACT");
-  const [wordHint, setWordHint] = useState<string>(""); // Nápověda ke slovu
-  const [isHintVisible, setIsHintVisible] = useState<boolean>(true); // Nápověda zobrazena na začátku
-
+  const [wordHint, setWordHint] = useState<string>("");
+  const [isHintVisible, setIsHintVisible] = useState<boolean>(true);
   const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
   const [wrongGuesses, setWrongGuesses] = useState<string[]>([]);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isWinner, setIsWinner] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  const [scoreData, setScoreData] = useState<Record<string, number>>({});
+
+  // Animace
   const translateYAnim = useRef(new Animated.Value(300)).current;
 
+  // ===== Funkce pro načítání a ukládání skóre přes AsyncStorage =====
+
+  const loadScores = async () => {
+    try {
+      const savedScores = await AsyncStorage.getItem("score");
+      if (savedScores) {
+        setScoreData(JSON.parse(savedScores));
+      }
+    } catch (error) {
+      console.error("Chyba při načítání skóre:", error);
+    }
+  };
+
+  const saveScore = async (word: string, newScore: number) => {
+    try {
+      // Pokud chceme ponechat lepší skóre z dřívějška, porovnáme:
+      const oldScore = scoreData[word] ?? 0;
+      const betterScore = Math.max(oldScore, newScore);
+
+      const updatedScoreData = { ...scoreData, [word]: betterScore };
+      await AsyncStorage.setItem("score", JSON.stringify(updatedScoreData));
+      setScoreData(updatedScoreData);
+    } catch (error) {
+      console.error("Chyba při ukládání skóre:", error);
+    }
+  };
+
   useEffect(() => {
+    loadScores();
+
     try {
       const safeTopic = Array.isArray(topic) ? topic[0] : topic;
       const safeDifficulty = Array.isArray(difficulty) ? difficulty[0] : difficulty;
+      const safeLevel = Number(level) - 1;
 
-      if (safeTopic && safeDifficulty && wordsData[safeTopic] && wordsData[safeTopic][safeDifficulty]) {
+      // Najdeme správné slovo podle topic/difficulty/level
+      if (
+        safeTopic &&
+        safeDifficulty &&
+        wordsData[safeTopic] &&
+        wordsData[safeTopic][safeDifficulty]
+      ) {
         const possibleWords = wordsData[safeTopic][safeDifficulty];
-        const selectedWord = possibleWords[Math.floor(Math.random() * possibleWords.length)];
-
-        setTargetWord(selectedWord.word);
-        setWordHint(selectedWord.hint); // Nastaví se nápověda
+        if (safeLevel >= 0 && safeLevel < possibleWords.length) {
+          const selectedWordData = possibleWords[safeLevel];
+          setTargetWord(selectedWordData.word);
+          setWordHint(selectedWordData.hint);
+        } else {
+          console.warn("Neplatný level, nemá přiřazené slovo.");
+        }
       }
     } catch (error) {
       console.error("Chyba při načítání JSON souboru:", error);
     }
-  }, [topic, difficulty]);
+  }, [topic, difficulty, level]);
 
+  // ===== Kontrola, zda je konec hry (výhra/prohra) a animace zobrazení =====
   useEffect(() => {
     if (isGameOver || isWinner) {
       Animated.timing(translateYAnim, {
@@ -54,39 +112,23 @@ export default function GameScreen() {
         duration: 500,
         useNativeDriver: true,
       }).start();
-    }
 
-    if (isWinner) {
-      setShowConfetti(true);
+      if (isWinner) {
+        setShowConfetti(true);
+      }
+
+      // Uložíme finální skóre (např. 3, 2, 1 nebo 0)
+      const finalScore = calculateScore(wrongGuesses.length);
+      saveScore(targetWord, finalScore);
     }
   }, [isGameOver, isWinner]);
 
-  const alphabet = "AÁBCČDĎEÉĚFGHIÍJKLMNŇOÓPQRŘSŠTŤUÚŮVWXYÝZŽ".split("");
-
-  const handleGuess = (letter: string) => {
-    if (targetWord.includes(letter)) {
-      const updatedGuessedLetters = [...guessedLetters, letter];
-      setGuessedLetters(updatedGuessedLetters);
-
-      if (targetWord.split("").every((char) => updatedGuessedLetters.includes(char))) {
-        setIsWinner(true);
-      }
-    } else {
-      Vibration.vibrate(200);
-      const newWrongGuesses = [...wrongGuesses, letter];
-      setWrongGuesses(newWrongGuesses);
-
-      if (newWrongGuesses.length >= 6) {
-        setIsGameOver(true);
-      }
-    }
-  };
-
-  const goToMenu = () => {
+  // ===== Navigace / akce po dohrání =====
+  const goToLevelSelect = () => {
     setIsGameOver(false);
     setIsWinner(false);
     setShowConfetti(false);
-    router.push("/menu");
+    router.push({ pathname: "/levels", params: { topic, difficulty } });
   };
 
   const restartGame = () => {
@@ -96,23 +138,34 @@ export default function GameScreen() {
     setGuessedLetters([]);
     setWrongGuesses([]);
     setIsHintVisible(true);
+  };
 
-    try {
-      const safeTopic = Array.isArray(topic) ? topic[0] : topic;
-      const safeDifficulty = Array.isArray(difficulty) ? difficulty[0] : difficulty;
-  
-      if (safeTopic && safeDifficulty && wordsData[safeTopic] && wordsData[safeTopic][safeDifficulty]) {
-        const possibleWords = wordsData[safeTopic][safeDifficulty];
-        const selectedWord = possibleWords[Math.floor(Math.random() * possibleWords.length)];
-  
-        setTargetWord(selectedWord.word);
-        setWordHint(selectedWord.hint);
+  // Abeceda (pokud potřebuješ kompletní českou abecedu)
+  const alphabet = "AÁBCČDĎEÉĚFGHIÍJKLMNŇOÓPQRŘSŠTŤUÚŮVWXYÝZŽ".split("");
+
+  // ===== Funkce na zpracování hádání písmen =====
+  const handleGuess = (letter: string) => {
+    if (targetWord.includes(letter)) {
+      const updatedGuessedLetters = [...guessedLetters, letter];
+      setGuessedLetters(updatedGuessedLetters);
+
+      // Kontrola, zda jsme uhodli všechna písmena
+      if (targetWord.split("").every((char) => updatedGuessedLetters.includes(char))) {
+        setIsWinner(true);
       }
-    } catch (error) {
-      console.error("Chyba při generování nového slova:", error);
+    } else {
+      Vibration.vibrate(200);
+      const newWrongGuesses = [...wrongGuesses, letter];
+      setWrongGuesses(newWrongGuesses);
+
+      // Šest špatných pokusů -> prohra
+      if (newWrongGuesses.length >= 6) {
+        setIsGameOver(true);
+      }
     }
   };
 
+  // Vykreslená podoba slova (neuhodnutá písmena jako "_")
   const displayedWord = targetWord
     .split("")
     .map((letter) => (guessedLetters.includes(letter) ? letter : "_"))
@@ -138,7 +191,7 @@ export default function GameScreen() {
 
       {/* TLAČÍTKO ZPĚT */}
       <TouchableOpacity
-        onPress={goToMenu}
+        onPress={goToLevelSelect}
         className="absolute top-14 left-5 bg-gray-700 px-4 py-2 rounded-full z-50"
       >
         <Text className="text-white text-lg font-semibold">← Zpět</Text>
@@ -213,7 +266,7 @@ export default function GameScreen() {
             </TouchableOpacity>
             <TouchableOpacity 
               className="bg-gray-600 px-4 py-2 rounded-lg" 
-              onPress={goToMenu}
+              onPress={goToLevelSelect}
             >
               <Text className="text-white text-lg font-semibold text-center">Zpět do menu</Text>
             </TouchableOpacity>
@@ -234,7 +287,7 @@ export default function GameScreen() {
             </TouchableOpacity>
             <TouchableOpacity 
               className="bg-gray-600 px-4 py-2 rounded-lg" 
-              onPress={goToMenu}
+              onPress={goToLevelSelect}
             >
               <Text className="text-white text-lg font-semibold text-center">Zpět do menu</Text>
             </TouchableOpacity>
