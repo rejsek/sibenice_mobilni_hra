@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Dimensions, Animated, Modal } from "react
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";
+import { Vibration } from "react-native";
 
 // 1) Typy pro JSON
 type WordEntry = { word: string; hint: string };
@@ -71,6 +72,7 @@ export default function GameScreen() {
         setIsWinner(true);
       }
     } else {
+      Vibration.vibrate(200);
       const newWrongGuesses = [...wrongGuesses, letter];
       setWrongGuesses(newWrongGuesses);
 

@@ -37,7 +37,7 @@ export default function Menu() {
     }
 
     router.push({
-      pathname: "/game",
+      pathname: "/levels",
       params: { difficulty: selectedDifficulty, topic: selectedTopic },
     });
   };
@@ -47,7 +47,7 @@ export default function Menu() {
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
-          paddingBottom: 40, // Rezerva pro tlačítko Hrát
+          paddingBottom: 40,
           alignItems: "center",
           paddingTop: 20,
         }}
