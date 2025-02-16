@@ -114,9 +114,12 @@ export default function GameScreen() {
       }).start();
 
       if (isWinner) {
-        setShowConfetti(true);
+        router.push({
+          pathname: "/(game)/win",
+          params: { word: targetWord, wrongCount: wrongGuesses.length, difficulty, topic, level }
+        });
       }
-
+      
       // Uložíme finální skóre (např. 3, 2, 1 nebo 0)
       const finalScore = calculateScore(wrongGuesses.length);
       saveScore(targetWord, finalScore);
