@@ -42,6 +42,8 @@ export default function GameScreen() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isWinner, setIsWinner] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [vibrationEnabled, setVibrationEnabled] = useState<boolean>(true);
+  const [limitAttemptsEnabled, setLimitAttemptsEnabled] = useState(true);
 
   const [scoreData, setScoreData] = useState<Record<string, number>>({});
 
@@ -74,6 +76,36 @@ export default function GameScreen() {
       console.error("Chyba při ukládání skóre:", error);
     }
   };
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const savedLimitAttempts = await AsyncStorage.getItem("limitAttempts");
+        if (savedLimitAttempts !== null) {
+          setLimitAttemptsEnabled(savedLimitAttempts === "true");
+        }
+      } catch (error) {
+        console.error("Chyba při načítání nastavení limitu pokusů:", error);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  useEffect(() => {
+    const loadVibrationSetting = async () => {
+      try {
+        const savedSetting = await AsyncStorage.getItem("vibrationEnabled");
+        if (savedSetting !== null) {
+          setVibrationEnabled(savedSetting === "true");
+        }
+      } catch (error) {
+        console.error("Chyba při načítání nastavení vibrací:", error);
+      }
+    };
+  
+    loadVibrationSetting();
+  }, []);
 
   useEffect(() => {
     loadScores();
@@ -157,7 +189,10 @@ export default function GameScreen() {
         setIsWinner(true);
       }
     } else {
-      Vibration.vibrate(200);
+      if (vibrationEnabled) {
+        Vibration.vibrate(100);
+      }
+
       const newWrongGuesses = [...wrongGuesses, letter];
       setWrongGuesses(newWrongGuesses);
 
@@ -213,14 +248,22 @@ export default function GameScreen() {
         <Text className="text-gray-400 text-lg mb-2">Obtížnost: {difficulty}</Text>
 
         {/* VYKRESLENÍ ŠIBENICE */}
-        <View className="w-full h-48 bg-gray-900 rounded-lg mb-10 items-center justify-center relative top-3">
-          {wrongGuesses.length > 0 && <View className="w-32 h-1 bg-white absolute bottom-2 left-1/2 -translate-x-1/2" />}
-          {wrongGuesses.length > 1 && <View className="w-1 h-40 bg-white absolute bottom-2 left-1/3" />}
-          {wrongGuesses.length > 2 && <View className="w-1/4 h-1 bg-white absolute top-6 left-1/3" />}
-          {wrongGuesses.length > 3 && <View className="w-1 h-1/4 bg-white absolute top-6 left-52" />}
-          {wrongGuesses.length > 4 && <View className="w-6 h-6 bg-white rounded-full absolute top-1/3 left-1/2" />}
-          {wrongGuesses.length > 5 && <View className="w-1 h-12 bg-white absolute top-22 left-52" />}
-        </View>
+        {limitAttemptsEnabled ? (
+          <View className="w-full h-48 bg-gray-900 rounded-lg mb-10 items-center justify-center relative top-3">
+            {wrongGuesses.length > 0 && <View className="w-32 h-1 bg-white absolute bottom-2 left-1/2 -translate-x-1/2" />}
+            {wrongGuesses.length > 1 && <View className="w-1 h-40 bg-white absolute bottom-2 left-1/3" />}
+            {wrongGuesses.length > 2 && <View className="w-1/4 h-1 bg-white absolute top-6 left-1/3" />}
+            {wrongGuesses.length > 3 && <View className="w-1 h-1/4 bg-white absolute top-6 left-52" />}
+            {wrongGuesses.length > 4 && <View className="w-6 h-6 bg-white rounded-full absolute top-1/3 left-1/2" />}
+            {wrongGuesses.length > 5 && <View className="w-1 h-12 bg-white absolute top-22 left-52" />}
+          </View>
+        ) : (
+            <View className="w-full h-48 bg-gray-900 rounded-lg mb-10 items-center justify-center relative top-3">
+              <Text className="text-white text-9xl font-bold mt-5">
+                {wrongGuesses.length}
+              </Text>
+            </View>
+        )}
 
         <Text className="text-white text-4xl font-bold tracking-widest mb-6">{displayedWord}</Text>
 

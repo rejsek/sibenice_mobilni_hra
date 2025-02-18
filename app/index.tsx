@@ -38,6 +38,15 @@ export default function Index() {
         </TouchableOpacity>
 
         <TouchableOpacity
+          onPress={() => router.push("/settings")}
+          className="bg-blue-600 px-6 py-4 rounded-xl shadow-lg shadow-black mb-6 w-full active:bg-blue-800"
+        >
+          <Text className="text-white text-xl font-semibold uppercase tracking-wider text-center">
+            Nastavení
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           className="bg-red-600 px-6 py-4 rounded-xl shadow-lg shadow-black mb-6 w-full active:bg-red-800"
         >
           <Text className="text-white text-xl font-semibold uppercase tracking-wider text-center">
