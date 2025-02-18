@@ -162,6 +162,7 @@ export default function Settings() {
           <View className="w-full bg-gray-700 px-6 py-4 rounded-lg shadow-md mb-4">
             <Text className="text-gray-300 text-lg mb-2">Časový limit na odpověď</Text>
             <Picker selectedValue={timeLimit} onValueChange={setTimeLimit} style={{ color: "white", backgroundColor: "gray" }}>
+              <Picker.Item label="5 sekund" value="5" />
               <Picker.Item label="30 sekund" value="30" />
               <Picker.Item label="60 sekund" value="60" />
               <Picker.Item label="Bez limitu" value="none" />

@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";
 
-// Import JSON s daty slov (neměníme ho přímo)
+// Import JSON s daty slov
 import wordsJson from "./words.json";
 const wordsData = wordsJson as Record<
   string,
@@ -42,16 +42,22 @@ export default function GameScreen() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isWinner, setIsWinner] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+
+  // Nastavení
   const [vibrationEnabled, setVibrationEnabled] = useState<boolean>(true);
   const [limitAttemptsEnabled, setLimitAttemptsEnabled] = useState(true);
+  const [timeLimit, setTimeLimit] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
+  // Skóre
   const [scoreData, setScoreData] = useState<Record<string, number>>({});
 
-  // Animace
+  // Animace (pop-up pro výhru/prohru)
   const translateYAnim = useRef(new Animated.Value(300)).current;
 
-  // ===== Funkce pro načítání a ukládání skóre přes AsyncStorage =====
-
+  // -------------------------------------------------
+  // ============   Funkce pro ukládání skóre  =======
+  // -------------------------------------------------
   const loadScores = async () => {
     try {
       const savedScores = await AsyncStorage.getItem("score");
@@ -65,11 +71,10 @@ export default function GameScreen() {
 
   const saveScore = async (word: string, newScore: number) => {
     try {
-      // Pokud chceme ponechat lepší skóre z dřívějška, porovnáme:
       const oldScore = scoreData[word] ?? 0;
       const betterScore = Math.max(oldScore, newScore);
-
       const updatedScoreData = { ...scoreData, [word]: betterScore };
+
       await AsyncStorage.setItem("score", JSON.stringify(updatedScoreData));
       setScoreData(updatedScoreData);
     } catch (error) {
@@ -77,67 +82,89 @@ export default function GameScreen() {
     }
   };
 
+  // -------------------------------------------------
+  // ============   Načtení a příprava hry   =========
+  // -------------------------------------------------
   useEffect(() => {
-    const loadSettings = async () => {
+    // Načti všechna nastavení a skóre
+    (async () => {
       try {
+        // 1) Skóre
+        await loadScores();
+
+        // 2) Časový limit
+        const storedTimeLimit = await AsyncStorage.getItem("timeLimit");
+        if (storedTimeLimit) {
+          const limit = parseInt(storedTimeLimit, 10);
+          if (!isNaN(limit)) {
+            setTimeLimit(limit);
+            setTimeLeft(limit);
+          }
+        }
+
+        // 3) Limit pokusů
         const savedLimitAttempts = await AsyncStorage.getItem("limitAttempts");
         if (savedLimitAttempts !== null) {
           setLimitAttemptsEnabled(savedLimitAttempts === "true");
         }
-      } catch (error) {
-        console.error("Chyba při načítání nastavení limitu pokusů:", error);
-      }
-    };
 
-    loadSettings();
-  }, []);
-
-  useEffect(() => {
-    const loadVibrationSetting = async () => {
-      try {
+        // 4) Vibrace
         const savedSetting = await AsyncStorage.getItem("vibrationEnabled");
         if (savedSetting !== null) {
           setVibrationEnabled(savedSetting === "true");
         }
-      } catch (error) {
-        console.error("Chyba při načítání nastavení vibrací:", error);
-      }
-    };
-  
-    loadVibrationSetting();
-  }, []);
 
-  useEffect(() => {
-    loadScores();
+        // 5) Nastav slovo z JSONu
+        const safeTopic = Array.isArray(topic) ? topic[0] : topic;
+        const safeDifficulty = Array.isArray(difficulty) ? difficulty[0] : difficulty;
+        const safeLevel = Number(level) - 1;
 
-    try {
-      const safeTopic = Array.isArray(topic) ? topic[0] : topic;
-      const safeDifficulty = Array.isArray(difficulty) ? difficulty[0] : difficulty;
-      const safeLevel = Number(level) - 1;
-
-      // Najdeme správné slovo podle topic/difficulty/level
-      if (
-        safeTopic &&
-        safeDifficulty &&
-        wordsData[safeTopic] &&
-        wordsData[safeTopic][safeDifficulty]
-      ) {
-        const possibleWords = wordsData[safeTopic][safeDifficulty];
-        if (safeLevel >= 0 && safeLevel < possibleWords.length) {
-          const selectedWordData = possibleWords[safeLevel];
-          setTargetWord(selectedWordData.word);
-          setWordHint(selectedWordData.hint);
-        } else {
-          console.warn("Neplatný level, nemá přiřazené slovo.");
+        if (
+          safeTopic &&
+          safeDifficulty &&
+          wordsData[safeTopic] &&
+          wordsData[safeTopic][safeDifficulty]
+        ) {
+          const possibleWords = wordsData[safeTopic][safeDifficulty];
+          if (safeLevel >= 0 && safeLevel < possibleWords.length) {
+            const selectedWordData = possibleWords[safeLevel];
+            setTargetWord(selectedWordData.word);
+            setWordHint(selectedWordData.hint);
+          } else {
+            console.warn("Neplatný level, nemá přiřazené slovo.");
+          }
         }
+      } catch (error) {
+        console.error("Chyba při nastavování hry:", error);
       }
-    } catch (error) {
-      console.error("Chyba při načítání JSON souboru:", error);
-    }
+    })();
   }, [topic, difficulty, level]);
 
-  // ===== Kontrola, zda je konec hry (výhra/prohra) a animace zobrazení =====
+  // -------------------------------------------------
+  // ============   Odpočet času   ===================
+  // -------------------------------------------------
   useEffect(() => {
+    if (timeLeft === null || isGameOver || isWinner) return;
+
+    if (timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft((prevTime) => (prevTime !== null ? prevTime - 1 : null));
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+
+    // Pokud čas dojde (timeLeft === 0)
+    if (timeLeft === 0) {
+      setIsGameOver(true);
+    }
+  }, [timeLeft, isGameOver, isWinner]);
+
+  // -------------------------------------------------
+  // ============   Efekt po dohrání   ===============
+  // -------------------------------------------------
+  useEffect(() => {
+    // Pokud nastane konec hry (výhra/prohra), spustí se animace
     if (isGameOver || isWinner) {
       Animated.timing(translateYAnim, {
         toValue: 0,
@@ -145,24 +172,42 @@ export default function GameScreen() {
         useNativeDriver: true,
       }).start();
 
+      // Zjisti finální skóre (pouze pokud je to skutečně konec)
+      let finalScore = 0;
+
       if (isWinner) {
+        // Pokud hráč vyhrál, spočítáme skóre podle počtu špatných pokusů
+        finalScore = calculateScore(wrongGuesses.length);
+        // Navigace na obrazovku výhry
         router.push({
           pathname: "/(game)/win",
-          params: { word: targetWord, wrongCount: wrongGuesses.length, difficulty, topic, level }
+          params: {
+            word: targetWord,
+            wrongCount: wrongGuesses.length,
+            difficulty,
+            topic,
+            level,
+          },
         });
+      } else {
+        // Pokud prohrál (pokud došel čas nebo pokusy), skóre bude 0
+        finalScore = 0;
       }
-      
-      // Uložíme finální skóre (např. 3, 2, 1 nebo 0)
-      const finalScore = calculateScore(wrongGuesses.length);
+
+      // Uložíme finální skóre
       saveScore(targetWord, finalScore);
     }
   }, [isGameOver, isWinner]);
 
-  // ===== Navigace / akce po dohrání =====
+  // -------------------------------------------------
+  // ============   Ovládání navigace   ==============
+  // -------------------------------------------------
   const goToLevelSelect = () => {
+    // Reset stavů hry
     setIsGameOver(false);
     setIsWinner(false);
     setShowConfetti(false);
+    // Zpět na výběr úrovní
     router.push({ pathname: "/levels", params: { topic, difficulty } });
   };
 
@@ -173,20 +218,31 @@ export default function GameScreen() {
     setGuessedLetters([]);
     setWrongGuesses([]);
     setIsHintVisible(true);
+
+    // Pokud máme časový limit, resetuj zbývající čas
+    if (timeLimit !== null) {
+      setTimeLeft(timeLimit);
+    }
   };
 
-  // Abeceda (pokud potřebuješ kompletní českou abecedu)
+  // -------------------------------------------------
+  // ============   Logika hádání písmen  ============
+  // -------------------------------------------------
   const alphabet = "AÁBCČDĎEÉĚFGHIÍJKLMNŇOÓPQRŘSŠTŤUÚŮVWXYÝZŽ".split("");
 
-  // ===== Funkce na zpracování hádání písmen =====
   const handleGuess = (letter: string) => {
     if (targetWord.includes(letter)) {
       const updatedGuessedLetters = [...guessedLetters, letter];
       setGuessedLetters(updatedGuessedLetters);
 
       // Kontrola, zda jsme uhodli všechna písmena
-      if (targetWord.split("").every((char) => updatedGuessedLetters.includes(char))) {
+      const allLettersGuessed = targetWord
+        .split("")
+        .every((char) => updatedGuessedLetters.includes(char));
+
+      if (allLettersGuessed) {
         setIsWinner(true);
+        setShowConfetti(true);
       }
     } else {
       if (vibrationEnabled) {
@@ -197,28 +253,33 @@ export default function GameScreen() {
       setWrongGuesses(newWrongGuesses);
 
       // Šest špatných pokusů -> prohra
-      if (newWrongGuesses.length >= 6) {
+      if (newWrongGuesses.length >= 6 && limitAttemptsEnabled) {
         setIsGameOver(true);
       }
     }
   };
 
-  // Vykreslená podoba slova (neuhodnutá písmena jako "_")
+  // -------------------------------------------------
+  // ============   Zobrazení slova   ================
+  // -------------------------------------------------
   const displayedWord = targetWord
     .split("")
     .map((letter) => (guessedLetters.includes(letter) ? letter : "_"))
     .join(" ");
 
+  // -------------------------------------------------
+  // ============   Render   =========================
+  // -------------------------------------------------
   return (
     <SafeAreaView className="flex-1 bg-gray-800 px-6 items-center justify-center">
-      {/* MODÁLNÍ OKNO S NÁPOVĚDOU - ZOBRAZÍ SE NA ZAČÁTKU */}
+      {/* MODÁLNÍ OKNO S NÁPOVĚDOU */}
       <Modal visible={isHintVisible} animationType="fade" transparent={true}>
         <View className="flex-1 justify-center items-center bg-black/70">
           <View className="bg-white p-6 rounded-lg w-4/5">
             <Text className="text-black text-xl font-bold mb-4">Nápověda</Text>
             <Text className="text-gray-700 text-lg mb-6">{wordHint}</Text>
-            <TouchableOpacity 
-              className="bg-blue-600 px-4 py-2 rounded-lg" 
+            <TouchableOpacity
+              className="bg-blue-600 px-4 py-2 rounded-lg"
               onPress={() => setIsHintVisible(false)}
             >
               <Text className="text-white text-lg font-semibold text-center">Rozumím</Text>
@@ -247,30 +308,47 @@ export default function GameScreen() {
         <Text className="text-white text-3xl font-bold mb-4">{topic}</Text>
         <Text className="text-gray-400 text-lg mb-2">Obtížnost: {difficulty}</Text>
 
-        {/* VYKRESLENÍ ŠIBENICE */}
+        {/* ZOBRAZENÍ ŠIBENICE NEBO ČASU */}
         {limitAttemptsEnabled ? (
           <View className="w-full h-48 bg-gray-900 rounded-lg mb-10 items-center justify-center relative top-3">
-            {wrongGuesses.length > 0 && <View className="w-32 h-1 bg-white absolute bottom-2 left-1/2 -translate-x-1/2" />}
-            {wrongGuesses.length > 1 && <View className="w-1 h-40 bg-white absolute bottom-2 left-1/3" />}
-            {wrongGuesses.length > 2 && <View className="w-1/4 h-1 bg-white absolute top-6 left-1/3" />}
-            {wrongGuesses.length > 3 && <View className="w-1 h-1/4 bg-white absolute top-6 left-52" />}
-            {wrongGuesses.length > 4 && <View className="w-6 h-6 bg-white rounded-full absolute top-1/3 left-1/2" />}
-            {wrongGuesses.length > 5 && <View className="w-1 h-12 bg-white absolute top-22 left-52" />}
+            {wrongGuesses.length > 0 && (
+              <View className="w-32 h-1 bg-white absolute bottom-2 left-1/2 -translate-x-1/2" />
+            )}
+            {wrongGuesses.length > 1 && (
+              <View className="w-1 h-40 bg-white absolute bottom-2 left-1/3" />
+            )}
+            {wrongGuesses.length > 2 && (
+              <View className="w-1/4 h-1 bg-white absolute top-6 left-1/3" />
+            )}
+            {wrongGuesses.length > 3 && (
+              <View className="w-1 h-1/4 bg-white absolute top-6 left-52" />
+            )}
+            {wrongGuesses.length > 4 && (
+              <View className="w-6 h-6 bg-white rounded-full absolute top-1/3 left-1/2" />
+            )}
+            {wrongGuesses.length > 5 && (
+              <View className="w-1 h-12 bg-white absolute top-22 left-52" />
+            )}
           </View>
         ) : (
-            <View className="w-full h-48 bg-gray-900 rounded-lg mb-10 items-center justify-center relative top-3">
-              <Text className="text-white text-9xl font-bold mt-5">
-                {wrongGuesses.length}
-              </Text>
-            </View>
+          <View className="w-full h-48 bg-gray-900 rounded-lg mb-10 items-center justify-center relative top-3">
+            {timeLimit !== null ? (
+              <Text className="text-red-500 text-9xl font-bold mt-5">{timeLeft}</Text>
+            ) : (
+              <Text className="text-white text-9xl font-bold mt-5">{wrongGuesses.length}</Text>
+            )}
+          </View>
         )}
 
-        <Text className="text-white text-4xl font-bold tracking-widest mb-6">{displayedWord}</Text>
+        <Text className="text-white text-4xl font-bold tracking-widest mb-6">
+          {displayedWord}
+        </Text>
 
         {!isGameOver && !isWinner && (
           <View className="flex-wrap flex-row justify-center mb-4">
             {alphabet.map((letter) => {
-              const isDisabled = guessedLetters.includes(letter) || wrongGuesses.includes(letter);
+              const isDisabled =
+                guessedLetters.includes(letter) || wrongGuesses.includes(letter);
               return (
                 <TouchableOpacity
                   key={letter}
@@ -297,45 +375,66 @@ export default function GameScreen() {
         )}
       </View>
 
-      {showConfetti && <ConfettiCannon count={200} origin={{ x: screenWidth / 2, y: 0 }} />}
-      
+      {/* KONFETY */}
+      {showConfetti && (
+        <ConfettiCannon count={200} origin={{ x: screenWidth / 2, y: 0 }} />
+      )}
+
+      {/* MODÁLNÍ OKNO - VÝHRA */}
       <Modal visible={isWinner} animationType="fade" transparent={true}>
         <View className="flex-1 justify-center items-center bg-black/70">
           <View className="bg-white p-6 rounded-lg w-4/5">
-            <Text className="text-green-600 text-2xl font-bold mb-4 text-center">🎉 Gratulace!</Text>
-            <Text className="text-gray-700 text-lg mb-6 text-center">Vyhrál jsi! Slovo bylo "{targetWord}".</Text>
-            <TouchableOpacity 
-              className="bg-blue-600 px-4 py-2 rounded-lg mb-2" 
+            <Text className="text-green-600 text-2xl font-bold mb-4 text-center">
+              🎉 Gratulace!
+            </Text>
+            <Text className="text-gray-700 text-lg mb-6 text-center">
+              Vyhrál jsi! Slovo bylo "{targetWord}".
+            </Text>
+            <TouchableOpacity
+              className="bg-blue-600 px-4 py-2 rounded-lg mb-2"
               onPress={restartGame}
             >
-              <Text className="text-white text-lg font-semibold text-center">Hrát znovu</Text>
+              <Text className="text-white text-lg font-semibold text-center">
+                Hrát znovu
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              className="bg-gray-600 px-4 py-2 rounded-lg" 
+            <TouchableOpacity
+              className="bg-gray-600 px-4 py-2 rounded-lg"
               onPress={goToLevelSelect}
             >
-              <Text className="text-white text-lg font-semibold text-center">Zpět do menu</Text>
+              <Text className="text-white text-lg font-semibold text-center">
+                Zpět do menu
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
+      {/* MODÁLNÍ OKNO - PROHRA */}
       <Modal visible={isGameOver} animationType="fade" transparent={true}>
         <View className="flex-1 justify-center items-center bg-black/70">
           <View className="bg-white p-6 rounded-lg w-4/5">
-            <Text className="text-red-600 text-2xl font-bold mb-4 text-center">❌ Prohra!</Text>
-            <Text className="text-gray-700 text-lg mb-6 text-center">Prohrál jsi! Hledané slovo bylo "{targetWord}".</Text>
-            <TouchableOpacity 
-              className="bg-blue-600 px-4 py-2 rounded-lg mb-2" 
+            <Text className="text-red-600 text-2xl font-bold mb-4 text-center">
+              ❌ Prohra!
+            </Text>
+            <Text className="text-gray-700 text-lg mb-6 text-center">
+              Prohrál jsi! Hledané slovo bylo "{targetWord}".
+            </Text>
+            <TouchableOpacity
+              className="bg-blue-600 px-4 py-2 rounded-lg mb-2"
               onPress={restartGame}
             >
-              <Text className="text-white text-lg font-semibold text-center">Zkusit znovu</Text>
+              <Text className="text-white text-lg font-semibold text-center">
+                Zkusit znovu
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              className="bg-gray-600 px-4 py-2 rounded-lg" 
+            <TouchableOpacity
+              className="bg-gray-600 px-4 py-2 rounded-lg"
               onPress={goToLevelSelect}
             >
-              <Text className="text-white text-lg font-semibold text-center">Zpět do menu</Text>
+              <Text className="text-white text-lg font-semibold text-center">
+                Zpět do menu
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
