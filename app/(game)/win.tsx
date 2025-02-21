@@ -3,9 +3,9 @@ import {
   SafeAreaView,
   View,
   Text,
-  TouchableOpacity,
   Dimensions,
   Animated,
+  TouchableOpacity
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";

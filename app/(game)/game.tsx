@@ -2,16 +2,17 @@ import { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
   Dimensions,
   Animated,
   Modal,
   Vibration,
+  TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 // Import JSON s daty slov
 import wordsJson from "./words.json";
@@ -275,14 +276,15 @@ export default function GameScreen() {
       {/* MODÁLNÍ OKNO S NÁPOVĚDOU */}
       <Modal visible={isHintVisible} animationType="fade" transparent={true}>
         <View className="flex-1 justify-center items-center bg-black/70">
-          <View className="bg-white p-6 rounded-lg w-4/5">
+          <View className="bg-white p-6 rounded-lg w-4/5 items-center">
+            <Icon name="help-outline" size={50} color="#FACC15" />
             <Text className="text-black text-xl font-bold mb-4">Nápověda</Text>
-            <Text className="text-gray-700 text-lg mb-6">{wordHint}</Text>
+            <Text className="text-gray-700 text-lg mb-6 text-center">{wordHint}</Text>
             <TouchableOpacity
-              className="bg-blue-600 px-4 py-2 rounded-lg"
+              className="bg-blue-600 px-4 py-2 rounded-lg flex-row items-center"
               onPress={() => setIsHintVisible(false)}
             >
-              <Text className="text-white text-lg font-semibold text-center">Rozumím</Text>
+              <Text className="text-white text-lg font-semibold text-center ml-2">Rozumím</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -291,17 +293,19 @@ export default function GameScreen() {
       {/* TLAČÍTKO ZPĚT */}
       <TouchableOpacity
         onPress={goToLevelSelect}
-        className="absolute top-14 left-5 bg-gray-700 px-4 py-2 rounded-full z-50"
+        className="absolute top-14 left-5 bg-gray-700 px-4 py-2 rounded-full z-50 flex-row items-center"
       >
-        <Text className="text-white text-lg font-semibold">← Zpět</Text>
+        <Icon name="arrow-back" size={24} color="white" />
+        <Text className="text-white text-lg font-semibold ml-2">Zpět</Text>
       </TouchableOpacity>
 
       {/* TLAČÍTKO PRO NÁPOVĚDU */}
       <TouchableOpacity
         onPress={() => setIsHintVisible(true)}
-        className="absolute top-14 right-5 bg-yellow-500 px-4 py-2 rounded-full z-50"
+        className="absolute top-14 right-5 bg-yellow-500 px-4 py-2 rounded-full z-50 flex-row items-center"
       >
-        <Text className="text-black text-lg font-semibold">❓ Nápověda</Text>
+        <Icon name="help-outline" size={24} color="black" />
+        <Text className="text-black text-lg font-semibold ml-2">Nápověda</Text>
       </TouchableOpacity>
 
       <View className="w-full max-w-[400px] items-center top-8">

@@ -1,8 +1,10 @@
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Icon from "react-native-vector-icons/MaterialIcons";
+
 
 // 1) Typy pro JSON data
 type WordEntry = { word: string; hint: string; score?: number };
@@ -55,17 +57,28 @@ export default function LevelSelect() {
   return (
     <SafeAreaView className="flex-1 bg-gray-800 px-6">
       <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: "center", paddingVertical: 20 }}>
+        {/* Tlačítko zpět s ikonou */}
         <TouchableOpacity
           onPress={() => router.push("/menu")}
-          className="absolute top-5 left-0 bg-gray-700 px-4 py-2 rounded-full z-50"
+          className="absolute top-5 left-0 bg-gray-700 px-4 py-2 rounded-full flex-row items-center z-50"
         >
-          <Text className="text-white text-lg font-semibold">← Zpět</Text>
+          <Icon name="arrow-back" size={24} color="white" />
+          <Text className="text-white text-lg font-semibold ml-2">Zpět</Text>
         </TouchableOpacity>
 
         <View className="mt-16 w-full items-center">
+          {/* Nadpis a info o výběru */}
           <Text className="text-white text-3xl font-bold mb-6">Vyber level</Text>
-          <Text className="text-gray-300 text-lg mb-4">Téma: {topic} | Obtížnost: {difficulty}</Text>
+          <View className="flex-row items-center mb-4">
+            <Icon name="category" size={24} color="white" style={{ marginRight: 5 }} />
+            <Text className="text-gray-300 text-lg">Téma: {topic}</Text>
+          </View>
+          <View className="flex-row items-center mb-6">
+            <Icon name="bar-chart" size={24} color="white" style={{ marginRight: 5 }} />
+            <Text className="text-gray-300 text-lg">Obtížnost: {difficulty}</Text>
+          </View>
 
+          {/* Mřížka levelů */}
           {Array.from({ length: Math.ceil(levelsData.length / 2) }, (_, rowIndex) => (
             <View key={rowIndex} className="flex-row justify-between w-full px-6 mb-4">
               {[0, 1].map((colIndex) => {

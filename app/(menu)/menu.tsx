@@ -1,7 +1,8 @@
 import { useRouter } from "expo-router";
-import { View, Text, TouchableOpacity, Dimensions, ScrollView, Modal } from "react-native";
+import { View, Text, Dimensions, ScrollView, Modal, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 // Definujeme typ pro jednotlivé položky
 type ButtonItem = {
@@ -53,30 +54,36 @@ export default function Menu() {
         }}
         showsVerticalScrollIndicator={false}
       >
+        {/* Modální okno s chybou */}
         <Modal visible={isErrorModalVisible} animationType="fade" transparent={true}>
           <View className="flex-1 justify-center items-center bg-black/70">
-            <View className="bg-white p-6 rounded-lg w-4/5">
-              <Text className="text-black text-xl font-bold mb-4">Chyba</Text>
-              <Text className="text-gray-700 text-lg mb-6">
-                Prosím, vyberte **obtížnost** i **téma** před spuštěním hry.
+            <View className="bg-white p-6 rounded-lg w-4/5 items-center">
+              <Icon name="error-outline" size={50} color="#DC2626" />
+              <Text className="text-black text-xl font-bold my-4">Chyba</Text>
+              <Text className="text-gray-700 text-lg mb-6 text-center">
+                Prosím, vyberte <Text className="font-bold">obtížnost</Text> i <Text className="font-bold">téma</Text> před spuštěním hry.
               </Text>
               <TouchableOpacity 
-                className="bg-red-600 px-4 py-2 rounded-lg" 
+                className="bg-red-600 px-4 py-2 rounded-lg flex-row items-center"
                 onPress={() => setIsErrorModalVisible(false)}
               >
-                <Text className="text-white text-lg font-semibold text-center">OK</Text>
+                <Icon name="check-circle" size={20} color="white" />
+                <Text className="text-white text-lg font-semibold text-center ml-2">OK</Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
 
+        {/* Tlačítko Zpět */}
         <TouchableOpacity
           onPress={() => router.push("/")}
-          className="absolute top-5 left-0 bg-gray-700 px-4 py-2 rounded-full z-50"
+          className="absolute top-5 left-0 bg-gray-700 px-4 py-2 rounded-full z-50 flex-row items-center"
         >
-          <Text className="text-white text-lg font-semibold">← Zpět</Text>
+          <Icon name="arrow-back" size={24} color="white" />
+          <Text className="text-white text-lg font-semibold ml-2">Zpět</Text>
         </TouchableOpacity>
 
+        {/* Hlavní obsah */}
         <View className="w-full max-w-[400px] items-center top-12">
           <Text className="text-white text-4xl font-bold text-center mb-4 pt-10">ŠIBENICE</Text>
           <Text className="text-gray-300 text-sm text-center mb-8">
@@ -84,51 +91,59 @@ export default function Menu() {
             <Text className="font-semibold italic"> Ukaž svou soutěživost!</Text>
           </Text>
 
+          {/* Nastavení hry */}
           <View className="w-full">
-            <Text className="text-gray-300 text-lg font-semibold mb-3">🎮 Nastav svou hru</Text>
+            <Text className="text-gray-300 text-2xl font-semibold mb-3">
+              Nastav svou hru
+            </Text>
 
+            {/* Výběr obtížnosti */}
             <Text className="text-gray-400 text-md font-medium mb-2">Obtížnost</Text>
             <View className="flex-row justify-between flex-wrap mb-6">
               {difficultyLevels.map((level, index) => (
                 <TouchableOpacity
                   key={index}
                   onPress={() => setSelectedDifficulty(level.name)}
-                  className="px-6 py-4 rounded-xl mx-2 mb-4"
+                  className="px-6 py-4 rounded-xl mx-2 mb-4 flex-row items-center justify-center"
                   style={{
                     flexBasis: `${100 / buttonsPerRow - 5}%`,
                     backgroundColor: selectedDifficulty === level.name ? "#22C55E" : level.color,
                   }}
                 >
-                  <Text className="text-white text-lg text-center font-bold">{level.name}</Text>
+                  <Icon name={level.icon} size={24} color="white" />
+                  <Text className="text-white text-lg text-center font-bold ml-2">{level.name}</Text>
                 </TouchableOpacity>
               ))}
             </View>
 
+            {/* Výběr tématu */}
             <Text className="text-gray-400 text-md font-medium mb-2">Téma</Text>
             <View className="flex-row flex-wrap justify-between">
               {topics.map((topic, index) => (
                 <TouchableOpacity
                   key={index}
                   onPress={() => setSelectedTopic(topic.name)}
-                  className="px-6 py-4 rounded-xl mx-2 mb-4"
+                  className="px-6 py-4 rounded-xl mx-2 mb-4 flex-row items-center justify-center"
                   style={{
                     flexBasis: `${100 / buttonsPerRow - 5}%`,
                     backgroundColor: selectedTopic === topic.name ? "#22C55E" : topic.color,
                   }}
                 >
-                  <Text className="text-white text-lg text-center font-bold">{topic.name}</Text>
+                  <Icon name={topic.icon} size={24} color="white" />
+                  <Text className="text-white text-lg text-center font-bold ml-2">{topic.name}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           </View>
 
-          {/* Tlačítko Hrát se správným umístěním */}
+          {/* Tlačítko Hrát */}
           <TouchableOpacity
-            className="bg-gray-700 px-10 py-4 rounded-full mt-8 shadow-lg"
+            className="bg-green-600 px-10 py-4 rounded-full mt-8 shadow-lg flex-row items-center justify-center"
             onPress={startGame}
-            style={{ marginBottom: 20 }} // Přidání prostoru pod tlačítkem
+            style={{ marginBottom: 20 }}
           >
-            <Text className="text-white text-xl font-semibold text-center">Hrát</Text>
+            <Icon name="play-arrow" size={28} color="white" />
+            <Text className="text-white text-xl font-semibold text-center ml-2">Hrát</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

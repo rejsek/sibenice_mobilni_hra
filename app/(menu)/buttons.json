@@ -1,21 +1,21 @@
 {
     "difficultyLevels": [
-      { "name": "Začátečník", "color": "#2563EB" },
-      { "name": "Pokročilý", "color": "#D97706" },
-      { "name": "Expert", "color": "#DC2626" }
+      { "name": "Začátečník", "color": "#2563EB", "icon": "sentiment-very-satisfied" },
+      { "name": "Pokročilý", "color": "#D97706", "icon": "sentiment-neutral" },
+      { "name": "Expert", "color": "#DC2626", "icon": "sentiment-very-dissatisfied" }
     ],
     "topics": [
-      { "name": "Zvířata", "color": "#EA580C" },
-      { "name": "Cestování", "color": "#9333EA" },
-      { "name": "Jídla", "color": "#EC4899" },
-      { "name": "Sporty", "color": "#0D9488" },
-      { "name": "Auta", "color": "#6B7280" },
-      { "name": "Technologie", "color": "#2563EB" },
-      { "name": "Filmy", "color": "#D97706" },
-      { "name": "Historie", "color": "#DC2626" },
-      { "name": "Hudba", "color": "#10B981" },
-      { "name": "Věda", "color": "#9333EA" },
-      { "name": "Vesmír", "color": "#F59E0B" }
+      { "name": "Zvířata", "color": "#EA580C", "icon": "pets" },
+      { "name": "Cestování", "color": "#9333EA", "icon": "flight" },
+      { "name": "Jídla", "color": "#EC4899", "icon": "restaurant" },
+      { "name": "Sporty", "color": "#0D9488", "icon": "sports" },
+      { "name": "Auta", "color": "#6B7280", "icon": "directions-car" },
+      { "name": "Technologie", "color": "#2563EB", "icon": "memory" },
+      { "name": "Filmy", "color": "#D97706", "icon": "movie" },
+      { "name": "Historie", "color": "#DC2626", "icon": "castle" },
+      { "name": "Hudba", "color": "#10B981", "icon": "music-note" },
+      { "name": "Věda", "color": "#9333EA", "icon": "science" },
+      { "name": "Vesmír", "color": "#F59E0B", "icon": "public" }
     ]
   }
   
