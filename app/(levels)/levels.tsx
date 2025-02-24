@@ -68,7 +68,7 @@ export default function LevelSelect() {
 
         <View className="mt-16 w-full items-center">
           {/* Nadpis a info o výběru */}
-          <Text className="text-white text-3xl font-bold mb-6">Vyber level</Text>
+          <Text className="text-white text-3xl font-bold mb-6">Vyber si úroveň</Text>
           <View className="flex-row items-center mb-4">
             <Icon name="category" size={24} color="white" style={{ marginRight: 5 }} />
             <Text className="text-gray-300 text-lg">Téma: {topic}</Text>
@@ -96,7 +96,7 @@ export default function LevelSelect() {
                     onPress={() => router.push({ pathname: "/game", params: { topic, difficulty, level: levelIndex + 1 } })}
                     className="w-40 bg-gray-700 px-6 py-4 rounded-xl shadow-lg shadow-black items-center"
                   >
-                    <Text className="text-white text-xl font-semibold">Level {levelIndex + 1}</Text>
+                    <Text className="text-white text-xl font-semibold">Úroveň {levelIndex + 1}</Text>
                     {renderStars(currentScore)}
                   </TouchableOpacity>
                 );

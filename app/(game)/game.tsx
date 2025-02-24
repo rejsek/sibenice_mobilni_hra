@@ -52,6 +52,7 @@ export default function GameScreen() {
 
   // Skóre
   const [scoreData, setScoreData] = useState<Record<string, number>>({});
+  const possibleWrongGuesses = 11;
 
   // Animace (pop-up pro výhru/prohru)
   const translateYAnim = useRef(new Animated.Value(300)).current;
@@ -254,7 +255,7 @@ export default function GameScreen() {
       setWrongGuesses(newWrongGuesses);
 
       // Šest špatných pokusů -> prohra
-      if (newWrongGuesses.length >= 6 && limitAttemptsEnabled) {
+      if (newWrongGuesses.length >= possibleWrongGuesses && limitAttemptsEnabled) {
         setIsGameOver(true);
       }
     }
@@ -315,25 +316,48 @@ export default function GameScreen() {
         {/* ZOBRAZENÍ ŠIBENICE NEBO ČASU */}
         {limitAttemptsEnabled ? (
           <View className="w-full h-48 bg-gray-900 rounded-lg mb-10 items-center justify-center relative top-3">
-            {wrongGuesses.length > 0 && (
-              <View className="w-32 h-1 bg-white absolute bottom-2 left-1/2 -translate-x-1/2" />
-            )}
-            {wrongGuesses.length > 1 && (
-              <View className="w-1 h-40 bg-white absolute bottom-2 left-1/3" />
-            )}
-            {wrongGuesses.length > 2 && (
-              <View className="w-1/4 h-1 bg-white absolute top-6 left-1/3" />
-            )}
-            {wrongGuesses.length > 3 && (
-              <View className="w-1 h-1/4 bg-white absolute top-6 left-52" />
-            )}
-            {wrongGuesses.length > 4 && (
-              <View className="w-6 h-6 bg-white rounded-full absolute top-1/3 left-1/2" />
-            )}
-            {wrongGuesses.length > 5 && (
-              <View className="w-1 h-12 bg-white absolute top-22 left-52" />
-            )}
+              {/* Základna */}
+              {wrongGuesses.length > 0 && (
+                <View className="w-32 h-1 bg-white absolute bottom-2 left-1/2 -translate-x-1/2" />
+              )}
+              {/* Svislý sloup */}
+              {wrongGuesses.length > 1 && (
+                <View className="w-1 h-40 bg-white absolute bottom-2 left-1/3" />
+              )}
+              {/* Horní trám */}
+              {wrongGuesses.length > 2 && (
+                <View className="w-1/4 h-1 bg-white absolute top-6 left-1/3" />
+              )}
+              {/* Provaz */}
+              {wrongGuesses.length > 3 && (
+                <View className="w-1 h-1/4 bg-white absolute top-6 left-52" />
+              )}
+              {/* Hlava */}
+              {wrongGuesses.length > 4 && (
+                <View className="w-6 h-6 bg-white rounded-full absolute top-1/3 left-1/2" />
+              )}
+              {/* Tělo */}
+              {wrongGuesses.length > 5 && (
+                <View className="w-1 h-14 bg-white absolute top-22 left-52" />
+              )}
+              {/* Levá ruka */}
+              {wrongGuesses.length > 6 && (
+                <View className="w-5 h-1 bg-white absolute top-24 left-52 rotate-45" />
+              )}
+              {/* Pravá ruka */}
+              {wrongGuesses.length > 7 && (
+                <View className="w-5 h-1 bg-white absolute top-24 left-48 -rotate-45" />
+              )}
+              {/* Levá noha */}
+              {wrongGuesses.length > 8 && (
+                <View className="w-5 h-1 bg-white absolute top-32 left-52 rotate-45" />
+              )}
+              {/* Pravá noha */}
+              {wrongGuesses.length > 9 && (
+                <View className="w-5 h-1 bg-white absolute top-32 left-48 -rotate-45" />
+              )}
           </View>
+
         ) : (
           <View className="w-full h-48 bg-gray-900 rounded-lg mb-10 items-center justify-center relative top-3">
             {timeLimit !== null ? (
