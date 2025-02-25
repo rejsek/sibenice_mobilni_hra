@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { View, Text, Dimensions, ScrollView, Modal, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 // Definujeme typ pro jednotlivé položky
@@ -23,6 +24,25 @@ export default function Menu() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [isErrorModalVisible, setIsErrorModalVisible] = useState<boolean>(false);
+  const [theme, setTheme] = useState("dark");
+
+  useEffect(() => {
+    setDifficultyLevels(gameData.difficultyLevels);
+    setTopics(gameData.topics);
+
+    const loadTheme = async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem("theme");
+        if (storedTheme) {
+          setTheme(storedTheme);
+        }
+      } catch (error) {
+        console.error("Chyba při načítání tématu:", error);
+      }
+    };
+
+    loadTheme();
+  }, []);
 
   useEffect(() => {
     setDifficultyLevels(gameData.difficultyLevels);
@@ -44,7 +64,7 @@ export default function Menu() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-800 px-6">
+    <SafeAreaView className={`flex-1 px-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
@@ -57,10 +77,10 @@ export default function Menu() {
         {/* Modální okno s chybou */}
         <Modal visible={isErrorModalVisible} animationType="fade" transparent={true}>
           <View className="flex-1 justify-center items-center bg-black/70">
-            <View className="bg-white p-6 rounded-lg w-4/5 items-center">
+            <View className={`p-6 rounded-lg w-4/5 items-center ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
               <Icon name="error-outline" size={50} color="#DC2626" />
-              <Text className="text-black text-xl font-bold my-4">Chyba</Text>
-              <Text className="text-gray-700 text-lg mb-6 text-center">
+              <Text className={`text-xl font-bold my-4 ${theme === "dark" ? "text-white" : "text-black"}`}>Chyba</Text>
+              <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
                 Prosím, vyberte <Text className="font-bold">obtížnost</Text> i <Text className="font-bold">téma</Text> před spuštěním hry.
               </Text>
               <TouchableOpacity 
@@ -73,32 +93,38 @@ export default function Menu() {
             </View>
           </View>
         </Modal>
-
+  
         {/* Tlačítko Zpět */}
         <TouchableOpacity
           onPress={() => router.push("/")}
-          className="absolute top-5 left-0 bg-gray-700 px-4 py-2 rounded-full z-50 flex-row items-center"
+          className={`absolute top-5 left-0 px-4 py-2 rounded-full z-50 flex-row items-center ${
+            theme === "dark" ? "bg-gray-700" : "bg-gray-300"
+          }`}
         >
-          <Icon name="arrow-back" size={24} color="white" />
-          <Text className="text-white text-lg font-semibold ml-2">Zpět</Text>
+          <Icon name="arrow-back" size={24} color={theme === "dark" ? "white" : "black"} />
+          <Text className={`text-lg font-semibold ml-2 ${theme === "dark" ? "text-white" : "text-black"}`}>Zpět</Text>
         </TouchableOpacity>
-
+  
         {/* Hlavní obsah */}
         <View className="w-full max-w-[400px] items-center top-12">
-          <Text className="text-white text-4xl font-bold text-center mb-4 pt-10">ŠIBENICE</Text>
-          <Text className="text-gray-300 text-sm text-center mb-8">
+          <Text className={`text-4xl font-bold text-center mb-4 pt-10 ${theme === "dark" ? "text-white" : "text-black"}`}>
+            ŠIBENICE
+          </Text>
+          <Text className={`text-sm text-center mb-8 ${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}>
             Sleduj svůj herní postup a zlepšuj své dovednosti.
             <Text className="font-semibold italic"> Ukaž svou soutěživost!</Text>
           </Text>
-
+  
           {/* Nastavení hry */}
           <View className="w-full">
-            <Text className="text-gray-300 text-2xl font-semibold mb-3">
+            <Text className={`text-2xl font-semibold mb-3 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
               Nastav svou hru
             </Text>
-
+  
             {/* Výběr obtížnosti */}
-            <Text className="text-gray-400 text-md font-medium mb-2">Obtížnost</Text>
+            <Text className={`text-md font-medium mb-2 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+              Obtížnost
+            </Text>
             <View className="flex-row justify-between flex-wrap mb-6">
               {difficultyLevels.map((level, index) => (
                 <TouchableOpacity
@@ -115,9 +141,11 @@ export default function Menu() {
                 </TouchableOpacity>
               ))}
             </View>
-
+  
             {/* Výběr tématu */}
-            <Text className="text-gray-400 text-md font-medium mb-2">Téma</Text>
+            <Text className={`text-md font-medium mb-2 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+              Téma
+            </Text>
             <View className="flex-row flex-wrap justify-between">
               {topics.map((topic, index) => (
                 <TouchableOpacity
@@ -135,12 +163,15 @@ export default function Menu() {
               ))}
             </View>
           </View>
-
+  
           {/* Tlačítko Hrát */}
           <TouchableOpacity
-            className="bg-green-600 px-10 py-4 rounded-full mt-8 shadow-lg flex-row items-center justify-center"
+            className="px-10 py-4 rounded-full mt-8 shadow-lg flex-row items-center justify-center"
             onPress={startGame}
-            style={{ marginBottom: 20 }}
+            style={{
+              backgroundColor: "#16A34A",
+              marginBottom: 20,
+            }}
           >
             <Icon name="play-arrow" size={28} color="white" />
             <Text className="text-white text-xl font-semibold text-center ml-2">Hrát</Text>
@@ -148,5 +179,5 @@ export default function Menu() {
         </View>
       </ScrollView>
     </SafeAreaView>
-  );
+  );  
 }

@@ -49,6 +49,7 @@ export default function GameScreen() {
   const [limitAttemptsEnabled, setLimitAttemptsEnabled] = useState(true);
   const [timeLimit, setTimeLimit] = useState<number | null>(null);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [theme, setTheme] = useState("dark");
 
   // Skóre
   const [scoreData, setScoreData] = useState<Record<string, number>>({});
@@ -88,6 +89,19 @@ export default function GameScreen() {
   // ============   Načtení a příprava hry   =========
   // -------------------------------------------------
   useEffect(() => {
+    const loadTheme = async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem("theme");
+        if (storedTheme) {
+          setTheme(storedTheme);
+        }
+      } catch (error) {
+        console.error("Chyba při načítání tématu:", error);
+      }
+    };
+
+    loadTheme();
+
     // Načti všechna nastavení a skóre
     (async () => {
       try {
@@ -277,10 +291,12 @@ export default function GameScreen() {
       {/* MODÁLNÍ OKNO S NÁPOVĚDOU */}
       <Modal visible={isHintVisible} animationType="fade" transparent={true}>
         <View className="flex-1 justify-center items-center bg-black/70">
-          <View className="bg-white p-6 rounded-lg w-4/5 items-center">
+          <View className={`p-6 rounded-lg w-4/5 items-center ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
             <Icon name="help-outline" size={50} color="#FACC15" />
-            <Text className="text-black text-xl font-bold mb-4">Nápověda</Text>
-            <Text className="text-gray-700 text-lg mb-6 text-center">{wordHint}</Text>
+            <Text className={`text-xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}>Nápověda</Text>
+            <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+              {wordHint}
+            </Text>
             <TouchableOpacity
               className="bg-blue-600 px-4 py-2 rounded-lg flex-row items-center"
               onPress={() => setIsHintVisible(false)}
@@ -294,10 +310,12 @@ export default function GameScreen() {
       {/* TLAČÍTKO ZPĚT */}
       <TouchableOpacity
         onPress={goToLevelSelect}
-        className="absolute top-14 left-5 bg-gray-700 px-4 py-2 rounded-full z-50 flex-row items-center"
+        className={`absolute top-14 left-5 px-4 py-2 rounded-full z-50 flex-row items-center ${
+          theme === "dark" ? "bg-gray-700" : "bg-gray-300"
+        }`}
       >
-        <Icon name="arrow-back" size={24} color="white" />
-        <Text className="text-white text-lg font-semibold ml-2">Zpět</Text>
+        <Icon name="arrow-back" size={24} color={theme === "dark" ? "white" : "black"} />
+        <Text className={`text-lg font-semibold ml-2 ${theme === "dark" ? "text-white" : "text-black"}`}>Zpět</Text>
       </TouchableOpacity>
 
       {/* TLAČÍTKO PRO NÁPOVĚDU */}
@@ -310,8 +328,8 @@ export default function GameScreen() {
       </TouchableOpacity>
 
       <View className="w-full max-w-[400px] items-center top-8">
-        <Text className="text-white text-3xl font-bold mb-4">{topic}</Text>
-        <Text className="text-gray-400 text-lg mb-2">Obtížnost: {difficulty}</Text>
+        <Text className={`text-3xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}>{topic}</Text>
+        <Text className={`text-lg mb-2 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>Obtížnost: {difficulty}</Text>
 
         {/* ZOBRAZENÍ ŠIBENICE NEBO ČASU */}
         {limitAttemptsEnabled ? (
@@ -372,11 +390,11 @@ export default function GameScreen() {
           {displayedWord}
         </Text>
 
-        {!isGameOver && !isWinner && (
+      {/* ABECEDA */}
+      {!isGameOver && !isWinner && (
           <View className="flex-wrap flex-row justify-center mb-4">
             {alphabet.map((letter) => {
-              const isDisabled =
-                guessedLetters.includes(letter) || wrongGuesses.includes(letter);
+              const isDisabled = guessedLetters.includes(letter) || wrongGuesses.includes(letter);
               return (
                 <TouchableOpacity
                   key={letter}
@@ -390,12 +408,14 @@ export default function GameScreen() {
                       ? "#22C55E"
                       : wrongGuesses.includes(letter)
                       ? "#DC2626"
-                      : "#374151",
+                      : theme === "dark"
+                      ? "#374151"
+                      : "#D1D5DB",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <Text className="text-white text-lg font-bold">{letter}</Text>
+                  <Text className={`text-lg font-bold ${theme === "dark" ? "text-white" : "text-black"}`}>{letter}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -411,28 +431,16 @@ export default function GameScreen() {
       {/* MODÁLNÍ OKNO - VÝHRA */}
       <Modal visible={isWinner} animationType="fade" transparent={true}>
         <View className="flex-1 justify-center items-center bg-black/70">
-          <View className="bg-white p-6 rounded-lg w-4/5">
-            <Text className="text-green-600 text-2xl font-bold mb-4 text-center">
-              🎉 Gratulace!
-            </Text>
-            <Text className="text-gray-700 text-lg mb-6 text-center">
+          <View className={`p-6 rounded-lg w-4/5 ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
+            <Text className="text-green-600 text-2xl font-bold mb-4 text-center">🎉 Gratulace!</Text>
+            <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
               Vyhrál jsi! Slovo bylo "{targetWord}".
             </Text>
-            <TouchableOpacity
-              className="bg-blue-600 px-4 py-2 rounded-lg mb-2"
-              onPress={restartGame}
-            >
-              <Text className="text-white text-lg font-semibold text-center">
-                Hrát znovu
-              </Text>
+            <TouchableOpacity className="bg-blue-600 px-4 py-2 rounded-lg mb-2" onPress={restartGame}>
+              <Text className="text-white text-lg font-semibold text-center">Hrát znovu</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              className="bg-gray-600 px-4 py-2 rounded-lg"
-              onPress={goToLevelSelect}
-            >
-              <Text className="text-white text-lg font-semibold text-center">
-                Zpět do menu
-              </Text>
+            <TouchableOpacity className="bg-gray-600 px-4 py-2 rounded-lg" onPress={goToLevelSelect}>
+              <Text className="text-white text-lg font-semibold text-center">Zpět do menu</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -441,28 +449,16 @@ export default function GameScreen() {
       {/* MODÁLNÍ OKNO - PROHRA */}
       <Modal visible={isGameOver} animationType="fade" transparent={true}>
         <View className="flex-1 justify-center items-center bg-black/70">
-          <View className="bg-white p-6 rounded-lg w-4/5">
-            <Text className="text-red-600 text-2xl font-bold mb-4 text-center">
-              ❌ Prohra!
-            </Text>
-            <Text className="text-gray-700 text-lg mb-6 text-center">
+          <View className={`p-6 rounded-lg w-4/5 ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
+            <Text className="text-red-600 text-2xl font-bold mb-4 text-center">❌ Prohra!</Text>
+            <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
               Prohrál jsi! Hledané slovo bylo "{targetWord}".
             </Text>
-            <TouchableOpacity
-              className="bg-blue-600 px-4 py-2 rounded-lg mb-2"
-              onPress={restartGame}
-            >
-              <Text className="text-white text-lg font-semibold text-center">
-                Zkusit znovu
-              </Text>
+            <TouchableOpacity className="bg-blue-600 px-4 py-2 rounded-lg mb-2" onPress={restartGame}>
+              <Text className="text-white text-lg font-semibold text-center">Zkusit znovu</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              className="bg-gray-600 px-4 py-2 rounded-lg"
-              onPress={goToLevelSelect}
-            >
-              <Text className="text-white text-lg font-semibold text-center">
-                Zpět do menu
-              </Text>
+            <TouchableOpacity className="bg-gray-600 px-4 py-2 rounded-lg" onPress={goToLevelSelect}>
+              <Text className="text-white text-lg font-semibold text-center">Zpět do menu</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -57,8 +57,8 @@ export default function Settings() {
 
   const resetProgress = async () => {
     try {
-      await AsyncStorage.removeItem("score"); // Smazání skóre
-      setIsResetModalVisible(false); // Zavření modálního okna
+      await AsyncStorage.removeItem("score");
+      setIsResetModalVisible(false);
     } catch (error) {
       console.error("Chyba při resetování postupu:", error);
     }
@@ -66,69 +66,103 @@ export default function Settings() {
 
   const confirmReset = async () => {
     try {
-      await AsyncStorage.removeItem("score"); // Smazání skóre
-      setIsResetModalVisible(false); // Zavření potvrzovacího okna
-      setIsSuccessModalVisible(true); // Zobrazení úspěšné hlášky
+      await AsyncStorage.removeItem("score");
+      setIsResetModalVisible(false);
+      setIsSuccessModalVisible(true);
     } catch (error) {
       console.error("Chyba při resetování postupu:", error);
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-900 px-6">
+    <SafeAreaView className={`flex-1 px-6 ${theme === "dark" ? "bg-gray-900" : "bg-white"}`}>
       <ScrollView 
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 40, alignItems: "center", paddingTop: 20 }}
         showsVerticalScrollIndicator={false}
       >
         <View className="w-full max-w-[350px] items-center">
-          <Text className="text-white text-3xl font-bold mb-6">Nastavení</Text>
-
+          <Text className={`text-3xl font-bold mb-6 ${theme === "dark" ? "text-white" : "text-black"}`}>
+            Nastavení
+          </Text>
+  
           {/* Přepínače s ikonami */}
-          <View className="w-full bg-gray-800 px-6 py-4 rounded-lg shadow-md mb-4 flex-row items-center">
-            <Icon name="music-note" size={24} color="#fff" style={{ marginRight: 10 }} />
-            <Text className="text-gray-300 text-lg flex-1">Hudba na pozadí</Text>
+          <View className={`w-full px-6 py-4 rounded-lg shadow-md mb-4 flex-row items-center ${theme === "dark" ? "bg-gray-800" : "bg-gray-200"}`}>
+            <Icon name="music-note" size={24} color={theme === "dark" ? "#fff" : "#000"} style={{ marginRight: 10 }} />
+            <Text className={`text-lg flex-1 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+              Hudba na pozadí
+            </Text>
             <Switch value={musicEnabled} onValueChange={setMusicEnabled} />
           </View>
-
-          <View className="w-full bg-gray-800 px-6 py-4 rounded-lg shadow-md mb-4 flex-row items-center">
-            <Icon name="volume-up" size={24} color="#fff" style={{ marginRight: 10 }} />
-            <Text className="text-gray-300 text-lg flex-1">Zvukové efekty</Text>
+  
+          <View className={`w-full px-6 py-4 rounded-lg shadow-md mb-4 flex-row items-center ${theme === "dark" ? "bg-gray-800" : "bg-gray-200"}`}>
+            <Icon name="volume-up" size={24} color={theme === "dark" ? "#fff" : "#000"} style={{ marginRight: 10 }} />
+            <Text className={`text-lg flex-1 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+              Zvukové efekty
+            </Text>
             <Switch value={soundEffectsEnabled} onValueChange={setSoundEffectsEnabled} />
           </View>
-
-          <View className="w-full bg-gray-800 px-6 py-4 rounded-lg shadow-md mb-4 flex-row items-center">
-            <Icon name="vibration" size={24} color="#fff" style={{ marginRight: 10 }} />
-            <Text className="text-gray-300 text-lg flex-1">Vibrace</Text>
+  
+          <View className={`w-full px-6 py-4 rounded-lg shadow-md mb-4 flex-row items-center ${theme === "dark" ? "bg-gray-800" : "bg-gray-200"}`}>
+            <Icon name="vibration" size={24} color={theme === "dark" ? "#fff" : "#000"} style={{ marginRight: 10 }} />
+            <Text className={`text-lg flex-1 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+              Vibrace
+            </Text>
             <Switch value={vibrationEnabled} onValueChange={setVibrationEnabled} />
           </View>
-
+  
           {/* Výběr tématu */}
-          <View className="w-full bg-gray-800 px-6 py-4 rounded-lg shadow-md mb-4">
-            <Text className="text-gray-300 text-lg mb-2">Barevné téma</Text>
-            <Picker selectedValue={theme} onValueChange={setTheme} style={{ color: "white", backgroundColor: "gray" }}>
-              <Picker.Item label="Světlé" value="light" />
-              <Picker.Item label="Tmavé" value="dark" />
+          <View className={`w-full px-6 py-4 rounded-lg shadow-md mb-4 ${theme === "dark" ? "bg-gray-800" : "bg-gray-200"}`}>
+            <Text className={`text-lg mb-2 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+              Barevné téma
+            </Text>
+            
+            <Picker
+              selectedValue={theme}
+              onValueChange={setTheme}
+              style={{
+                backgroundColor: theme === "dark" ? "#4B5563" : "#E5E7EB",
+              }}
+              itemStyle={{
+                color: theme === "dark" ? "white" : "black",
+              }}
+            >
+              <Picker.Item label="Světlé" value="light" color={theme === "dark" ? "white" : "black"} />
+              <Picker.Item label="Tmavé" value="dark" color={theme === "dark" ? "white" : "black"} />
             </Picker>
-          </View>
 
+          </View>
+  
           {/* Časový limit */}
-          <View className="w-full bg-gray-800 px-6 py-4 rounded-lg shadow-md mb-4">
-            <Text className="text-gray-300 text-lg mb-2">Časový limit na odpověď</Text>
-            <Picker selectedValue={timeLimit} onValueChange={setTimeLimit} style={{ color: "white", backgroundColor: "gray" }}>
+          <View className={`w-full px-6 py-4 rounded-lg shadow-md mb-4 ${theme === "dark" ? "bg-gray-800" : "bg-gray-200"}`}>
+            <Text className={`text-lg mb-2 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+              Časový limit na odpověď
+            </Text>
+            <Picker
+              selectedValue={timeLimit}
+              onValueChange={setTimeLimit}
+              style={{
+                backgroundColor: theme === "dark" ? "#4B5563" : "#E5E7EB",
+              }}
+              itemStyle={{
+                color: theme === "dark" ? "white" : "black",
+              }}
+            >
               <Picker.Item label="5 sekund" value="5" />
               <Picker.Item label="30 sekund" value="30" />
               <Picker.Item label="60 sekund" value="60" />
               <Picker.Item label="Bez limitu" value="none" />
             </Picker>
           </View>
-
+  
           {/* Omezení pokusů */}
-          <View className="w-full bg-gray-800 px-6 py-4 rounded-lg shadow-md mb-4 flex-row items-center">
-            <Icon name="lock" size={24} color="#fff" style={{ marginRight: 10 }} />
-            <Text className="text-gray-300 text-lg flex-1">Omezení pokusů</Text>
+          <View className={`w-full px-6 py-4 rounded-lg shadow-md mb-4 flex-row items-center ${theme === "dark" ? "bg-gray-800" : "bg-gray-200"}`}>
+            <Icon name="lock" size={24} color={theme === "dark" ? "#fff" : "#000"} style={{ marginRight: 10 }} />
+            <Text className={`text-lg flex-1 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+              Omezení pokusů
+            </Text>
             <Switch value={limitAttempts} onValueChange={setLimitAttempts} />
           </View>
-
+  
           {/* Tlačítka */}
           <TouchableOpacity
             onPress={saveSettings}
@@ -137,7 +171,7 @@ export default function Settings() {
             <Icon name="save" size={24} color="white" />
             <Text className="text-white text-xl font-semibold ml-2">Uložit nastavení</Text>
           </TouchableOpacity>
-
+  
           <TouchableOpacity
             onPress={() => setIsResetModalVisible(true)}
             className="bg-red-600 px-6 py-4 rounded-xl shadow-lg w-full mb-4 flex-row justify-center items-center"
@@ -145,10 +179,10 @@ export default function Settings() {
             <Icon name="refresh" size={24} color="white" />
             <Text className="text-white text-xl font-semibold ml-2">Resetovat postup</Text>
           </TouchableOpacity>
-
+  
           <TouchableOpacity
             onPress={() => router.back()}
-            className="bg-gray-600 px-6 py-4 rounded-xl shadow-lg w-full flex-row justify-center items-center"
+            className={`px-6 py-4 rounded-xl shadow-lg w-full flex-row justify-center items-center ${theme === "dark" ? "bg-gray-600" : "bg-gray-300"}`}
           >
             <Icon name="arrow-back" size={24} color="white" />
             <Text className="text-white text-xl font-semibold ml-2">Zpět</Text>
@@ -156,5 +190,5 @@ export default function Settings() {
         </View>
       </ScrollView>
     </SafeAreaView>
-  );
+  );  
 }
