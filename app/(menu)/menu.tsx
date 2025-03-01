@@ -84,11 +84,10 @@ export default function Menu() {
                 Prosím, vyberte <Text className="font-bold">obtížnost</Text> i <Text className="font-bold">téma</Text> před spuštěním hry.
               </Text>
               <TouchableOpacity 
-                className="bg-red-600 px-4 py-2 rounded-lg flex-row items-center"
+                className="bg-red-600 px-4 py-2 rounded-lg w-full"
                 onPress={() => setIsErrorModalVisible(false)}
               >
-                <Icon name="check-circle" size={20} color="white" />
-                <Text className="text-white text-lg font-semibold text-center ml-2">OK</Text>
+                <Text className="text-white text-lg font-semibold text-center">OK</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -166,7 +165,9 @@ export default function Menu() {
   
           {/* Tlačítko Hrát */}
           <TouchableOpacity
-            className="px-10 py-4 rounded-full mt-8 shadow-lg flex-row items-center justify-center"
+            className={`px-10 py-4 rounded-full mt-8 flex-row items-center justify-center ${
+              theme === "dark" ? "shadow-lg shadow-black" : ""
+            }`}
             onPress={startGame}
             style={{
               backgroundColor: "#16A34A",

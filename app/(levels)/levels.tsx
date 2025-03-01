@@ -64,7 +64,11 @@ export default function LevelSelect() {
 
   const renderStars = (score: number) => {
     const stars = "★".repeat(score) + "☆".repeat(3 - score);
-    return <Text className="text-yellow-400 text-lg">{stars}</Text>;
+    return (
+      <Text className={`text-lg ${theme === "dark" ? "text-yellow-400" : "text-yellow-600"}`}>
+        {stars}
+      </Text>
+    );
   };
 
   return (
@@ -105,18 +109,20 @@ export default function LevelSelect() {
               {[0, 1].map((colIndex) => {
                 const levelIndex = rowIndex * 2 + colIndex;
                 if (levelIndex >= levelsData.length) return null;
-  
+            
                 // Zjistíme slovo na tomto levelu
                 const currentWord = levelsData[levelIndex].word;
                 // Najdeme skóre z userScores
                 const currentScore = userScores[currentWord] || 0;
-  
+            
                 return (
                   <TouchableOpacity
                     key={levelIndex}
                     onPress={() => router.push({ pathname: "/game", params: { topic, difficulty, level: levelIndex + 1 } })}
-                    className={`w-40 px-6 py-4 rounded-xl shadow-lg items-center ${
-                      theme === "dark" ? "bg-gray-700 shadow-black" : "bg-gray-200 shadow-gray-500"
+                    className={`w-40 px-6 py-4 rounded-xl items-center ${
+                      theme === "dark"
+                        ? "bg-gray-700 shadow-lg shadow-black"
+                        : "bg-gray-200"
                     }`}
                   >
                     <Text className={`text-xl font-semibold ${theme === "dark" ? "text-white" : "text-black"}`}>
@@ -126,7 +132,7 @@ export default function LevelSelect() {
                   </TouchableOpacity>
                 );
               })}
-            </View>
+            </View>          
           ))}
         </View>
       </ScrollView>

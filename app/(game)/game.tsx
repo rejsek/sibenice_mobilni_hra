@@ -50,6 +50,7 @@ export default function GameScreen() {
   const [timeLimit, setTimeLimit] = useState<number | null>(null);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [theme, setTheme] = useState("dark");
+  const poleColor = theme === "dark" ? "bg-white" : "bg-black";
 
   // Skóre
   const [scoreData, setScoreData] = useState<Record<string, number>>({});
@@ -287,7 +288,8 @@ export default function GameScreen() {
   // ============   Render   =========================
   // -------------------------------------------------
   return (
-    <SafeAreaView className="flex-1 bg-gray-800 px-6 items-center justify-center">
+    <SafeAreaView className={`flex-1 px-6 items-center justify-center ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}> 
+    
       {/* MODÁLNÍ OKNO S NÁPOVĚDOU */}
       <Modal visible={isHintVisible} animationType="fade" transparent={true}>
         <View className="flex-1 justify-center items-center bg-black/70">
@@ -323,8 +325,10 @@ export default function GameScreen() {
         onPress={() => setIsHintVisible(true)}
         className="absolute top-14 right-5 bg-yellow-500 px-4 py-2 rounded-full z-50 flex-row items-center"
       >
-        <Icon name="help-outline" size={24} color="black" />
-        <Text className="text-black text-lg font-semibold ml-2">Nápověda</Text>
+        <Icon name="help-outline" size={24} color={theme === "dark" ? "black" : "white"} />
+        <Text className={`text-lg font-semibold ml-2 ${theme === "dark" ? "text-black" : "text-white"}`}>
+          Nápověda
+        </Text>
       </TouchableOpacity>
 
       <View className="w-full max-w-[400px] items-center top-8">
@@ -332,94 +336,107 @@ export default function GameScreen() {
         <Text className={`text-lg mb-2 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>Obtížnost: {difficulty}</Text>
 
         {/* ZOBRAZENÍ ŠIBENICE NEBO ČASU */}
-        {limitAttemptsEnabled ? (
-          <View className="w-full h-48 bg-gray-900 rounded-lg mb-10 items-center justify-center relative top-3">
+        {limitAttemptsEnabled && timeLimit === null ? (
+          <View className={`w-full h-48 rounded-lg mb-10 items-center justify-center relative top-3 ${theme === "dark" ? "bg-gray-900" : "bg-gray-300"}`}>           
               {/* Základna */}
               {wrongGuesses.length > 0 && (
-                <View className="w-32 h-1 bg-white absolute bottom-2 left-1/2 -translate-x-1/2" />
+                <View className={`w-32 h-1 ${poleColor} absolute bottom-2 left-1/2 -translate-x-1/2`} />
               )}
               {/* Svislý sloup */}
               {wrongGuesses.length > 1 && (
-                <View className="w-1 h-40 bg-white absolute bottom-2 left-1/3" />
+                <View className={`w-1 h-40 ${poleColor} absolute bottom-2 left-1/3`} />
               )}
               {/* Horní trám */}
               {wrongGuesses.length > 2 && (
-                <View className="w-1/4 h-1 bg-white absolute top-6 left-1/3" />
+                <View className={`w-1/4 h-1 ${poleColor} absolute top-6 left-1/3`} />
               )}
               {/* Provaz */}
               {wrongGuesses.length > 3 && (
-                <View className="w-1 h-1/4 bg-white absolute top-6 left-52" />
+                <View className={`w-1 h-1/4 ${poleColor} absolute top-6 left-52`} />
               )}
               {/* Hlava */}
               {wrongGuesses.length > 4 && (
-                <View className="w-6 h-6 bg-white rounded-full absolute top-1/3 left-1/2" />
+                <View className={`w-6 h-6 ${poleColor} rounded-full absolute top-1/3 left-1/2`} />
               )}
               {/* Tělo */}
               {wrongGuesses.length > 5 && (
-                <View className="w-1 h-14 bg-white absolute top-22 left-52" />
+                <View className={`w-1 h-14 ${poleColor} absolute top-22 left-52`} />
               )}
               {/* Levá ruka */}
               {wrongGuesses.length > 6 && (
-                <View className="w-5 h-1 bg-white absolute top-24 left-52 rotate-45" />
+                <View className={`w-5 h-1 ${poleColor} absolute top-24 left-52 rotate-45`} />
               )}
               {/* Pravá ruka */}
               {wrongGuesses.length > 7 && (
-                <View className="w-5 h-1 bg-white absolute top-24 left-48 -rotate-45" />
+                <View className={`w-5 h-1 ${poleColor} absolute top-24 left-48 -rotate-45`} />
               )}
               {/* Levá noha */}
               {wrongGuesses.length > 8 && (
-                <View className="w-5 h-1 bg-white absolute top-32 left-52 rotate-45" />
+                <View className={`w-5 h-1 ${poleColor} absolute top-32 left-52 rotate-45`} />
               )}
               {/* Pravá noha */}
               {wrongGuesses.length > 9 && (
-                <View className="w-5 h-1 bg-white absolute top-32 left-48 -rotate-45" />
+                <View className={`w-5 h-1 ${poleColor} absolute top-32 left-48 -rotate-45`} />
               )}
           </View>
 
         ) : (
-          <View className="w-full h-48 bg-gray-900 rounded-lg mb-10 items-center justify-center relative top-3">
+          <View className={`w-full h-48 rounded-lg mb-10 items-center justify-center relative top-3 ${theme === "dark" ? "bg-gray-900" : "bg-gray-300"}`}> 
             {timeLimit !== null ? (
               <Text className="text-red-500 text-9xl font-bold mt-5">{timeLeft}</Text>
             ) : (
-              <Text className="text-white text-9xl font-bold mt-5">{wrongGuesses.length}</Text>
+              <Text className={`text-9xl font-bold mt-5 ${theme === "dark" ? "text-white" : "text-black"}`}>
+                {wrongGuesses.length}
+              </Text>
+
             )}
           </View>
         )}
 
-        <Text className="text-white text-4xl font-bold tracking-widest mb-6">
+        <Text className={`text-4xl font-bold tracking-widest mb-6 ${theme === "dark" ? "text-white" : "text-black"}`}>
           {displayedWord}
         </Text>
 
       {/* ABECEDA */}
       {!isGameOver && !isWinner && (
-          <View className="flex-wrap flex-row justify-center mb-4">
-            {alphabet.map((letter) => {
-              const isDisabled = guessedLetters.includes(letter) || wrongGuesses.includes(letter);
-              return (
-                <TouchableOpacity
-                  key={letter}
-                  onPress={() => handleGuess(letter)}
-                  disabled={isDisabled}
-                  className="px-4 py-3 m-1 rounded-lg"
+        <View className="flex-wrap flex-row justify-center mb-4">
+          {alphabet.map((letter) => {
+            const isGuessed = guessedLetters.includes(letter);
+            const isWrong = wrongGuesses.includes(letter);
+            const isDisabled = isGuessed || isWrong;
+        
+            return (
+              <TouchableOpacity
+                key={letter}
+                onPress={() => handleGuess(letter)}
+                disabled={isDisabled}
+                className="px-4 py-3 m-1 rounded-lg"
+                style={{
+                  flexBasis: "12%",
+                  height: 50,
+                  backgroundColor: isGuessed
+                    ? "#22C55E" // Správná odpověď - zelená
+                    : isWrong
+                    ? "#DC2626" // Špatná odpověď - červená
+                    : theme === "dark"
+                    ? "#374151" // Tmavý režim - šedá
+                    : "#D1D5DB", // Světlý režim - světlá šedá
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  className="text-lg font-bold"
                   style={{
-                    flexBasis: "12%",
-                    height: 50,
-                    backgroundColor: guessedLetters.includes(letter)
-                      ? "#22C55E"
-                      : wrongGuesses.includes(letter)
-                      ? "#DC2626"
-                      : theme === "dark"
-                      ? "#374151"
-                      : "#D1D5DB",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    color: isGuessed || isWrong ? "white" : theme === "dark" ? "white" : "black",
                   }}
                 >
-                  <Text className={`text-lg font-bold ${theme === "dark" ? "text-white" : "text-black"}`}>{letter}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+                  {letter}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>        
         )}
       </View>
 

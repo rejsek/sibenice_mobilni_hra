@@ -43,13 +43,17 @@ export default function Index() {
             paddingHorizontal: 40,
             paddingVertical: 24,
             marginBottom: 40,
-            shadowColor: "#000",
-            shadowOpacity: 0.5,
-            shadowRadius: 10,
             backgroundColor: theme === "dark" ? "#374151" : "#F3F4F6",
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
+            ...(theme === "dark"
+              ? {
+                  shadowColor: "#000",
+                  shadowOpacity: 0.5,
+                  shadowRadius: 10,
+                }
+              : {}),
           }}
         >
           <Icon name="sports-esports" size={50} color={theme === "dark" ? "white" : "black"} style={{ marginRight: 10 }} />
