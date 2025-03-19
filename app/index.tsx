@@ -1,12 +1,13 @@
 import { useRouter } from "expo-router";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Animated, Easing } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function Index() {
   const router = useRouter();
   const [theme, setTheme] = useState("dark");
+  const scaleAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     const loadTheme = async () => {
@@ -21,6 +22,26 @@ export default function Index() {
     };
 
     loadTheme();
+  }, []);
+
+  useEffect(() => {
+    // Animace tlačítka "Začít hru"
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 1.05, // Jemné zvětšení
+          duration: 1000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 1, // Návrat na původní velikost
+          duration: 1000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
   }, []);
 
   return (
@@ -42,21 +63,13 @@ export default function Index() {
             borderRadius: 20,
             paddingHorizontal: 40,
             paddingVertical: 24,
-            marginBottom: 40,
+            marginBottom: 50, // Větší mezera pod nadpisem
             backgroundColor: theme === "dark" ? "#374151" : "#F3F4F6",
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
-            ...(theme === "dark"
-              ? {
-                  shadowColor: "#000",
-                  shadowOpacity: 0.5,
-                  shadowRadius: 10,
-                }
-              : {}),
           }}
         >
-          <Icon name="sports-esports" size={50} color={theme === "dark" ? "white" : "black"} style={{ marginRight: 10 }} />
           <Text
             style={{
               fontSize: 44,
@@ -71,34 +84,38 @@ export default function Index() {
           </Text>
         </View>
 
-        {/* Tlačítko - Začít hru */}
-        <TouchableOpacity
-          onPress={() => router.push("/menu")}
-          style={{
-            backgroundColor: "#16A34A",
-            paddingHorizontal: 24,
-            paddingVertical: 16,
-            borderRadius: 12,
-            marginBottom: 16,
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Icon name="play-arrow" size={28} color="white" />
-          <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", marginLeft: 8 }}>Začít hru</Text>
-        </TouchableOpacity>
+        {/* Tlačítko - Začít hru (s animací, ale pevná šířka) */}
+        <Animated.View style={{ width: "100%", transform: [{ scale: scaleAnim }] }}>
+          <TouchableOpacity
+            onPress={() => router.push("/menu")}
+            activeOpacity={0.8}
+            style={{
+              backgroundColor: "#16A34A",
+              paddingHorizontal: 24,
+              paddingVertical: 16,
+              borderRadius: 12,
+              marginBottom: 24, // Větší mezera
+              width: "100%",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Icon name="play-arrow" size={28} color="white" />
+            <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", marginLeft: 8 }}>Začít hru</Text>
+          </TouchableOpacity>
+        </Animated.View>
 
         {/* Tlačítko - Nastavení */}
         <TouchableOpacity
           onPress={() => router.push("/settings")}
+          activeOpacity={0.8}
           style={{
             backgroundColor: "#2563EB",
             paddingHorizontal: 24,
             paddingVertical: 16,
             borderRadius: 12,
-            marginBottom: 16,
+            marginBottom: 24, // Větší mezera
             width: "100%",
             flexDirection: "row",
             justifyContent: "center",
@@ -111,6 +128,7 @@ export default function Index() {
 
         {/* Tlačítko - Ukončit hru */}
         <TouchableOpacity
+          activeOpacity={0.8}
           style={{
             backgroundColor: "#DC2626",
             paddingHorizontal: 24,

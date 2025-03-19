@@ -52,6 +52,10 @@ export default function GameScreen() {
   const [theme, setTheme] = useState("dark");
   const poleColor = theme === "dark" ? "bg-white" : "bg-black";
 
+  const opacityAnim = useRef(new Animated.Value(0)).current; // Začínáme na 0 (neviditelné)
+  const scaleAnim = useRef(new Animated.Value(0.8)).current; // Začínáme s menší velikostí
+  const [isAnimating, setIsAnimating] = useState(false);
+
   // Skóre
   const [scoreData, setScoreData] = useState<Record<string, number>>({});
   const possibleWrongGuesses = 11;
@@ -284,6 +288,42 @@ export default function GameScreen() {
     .map((letter) => (guessedLetters.includes(letter) ? letter : "_"))
     .join(" ");
 
+    useEffect(() => {
+      if (isHintVisible) {
+        // Otevření: Spustíme animaci a zobrazíme Modal
+        setIsAnimating(true);
+        Animated.parallel([
+          Animated.timing(opacityAnim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scaleAnim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      } else {
+        // Zavření: Spustíme animaci a po jejím dokončení skryjeme Modal
+        Animated.parallel([
+          Animated.timing(opacityAnim, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scaleAnim, {
+            toValue: 0.8,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          // Po dokončení animace skryjeme Modal
+          setIsAnimating(false);
+        });
+      }
+    }, [isHintVisible]);
+
   // -------------------------------------------------
   // ============   Render   =========================
   // -------------------------------------------------
@@ -291,9 +331,15 @@ export default function GameScreen() {
     <SafeAreaView className={`flex-1 px-6 items-center justify-center ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}> 
     
       {/* MODÁLNÍ OKNO S NÁPOVĚDOU */}
-      <Modal visible={isHintVisible} animationType="fade" transparent={true}>
+      <Modal visible={isHintVisible || isAnimating} transparent={true} animationType="none">
         <View className="flex-1 justify-center items-center bg-black/70">
-          <View className={`p-6 rounded-lg w-4/5 items-center ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
+          <Animated.View
+            className={`p-6 rounded-lg w-4/5 items-center ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}
+            style={{
+              opacity: opacityAnim,
+              transform: [{ scale: scaleAnim }],
+            }}
+          >
             <Icon name="help-outline" size={50} color="#FACC15" />
             <Text className={`text-xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}>Nápověda</Text>
             <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
@@ -305,7 +351,7 @@ export default function GameScreen() {
             >
               <Text className="text-white text-lg font-semibold text-center ml-2">Rozumím</Text>
             </TouchableOpacity>
-          </View>
+          </Animated.View>
         </View>
       </Modal>
 
@@ -469,9 +515,9 @@ export default function GameScreen() {
           <View className={`p-6 rounded-lg w-4/5 ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
             <Text className="text-red-600 text-2xl font-bold mb-4 text-center">❌ Prohra!</Text>
             <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
-              Prohrál jsi! Hledané slovo bylo "{targetWord}".
+              Prohrál jsi! Zkus to znovu.
             </Text>
-            <TouchableOpacity className="bg-blue-600 px-4 py-2 rounded-lg mb-2" onPress={restartGame}>
+            <TouchableOpacity className="bg-yellow-600 px-4 py-2 rounded-lg mb-2" onPress={restartGame}>
               <Text className="text-white text-lg font-semibold text-center">Zkusit znovu</Text>
             </TouchableOpacity>
             <TouchableOpacity className="bg-gray-600 px-4 py-2 rounded-lg" onPress={goToLevelSelect}>
