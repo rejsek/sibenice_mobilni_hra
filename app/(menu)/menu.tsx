@@ -51,6 +51,14 @@ export default function Menu() {
 
   const buttonsPerRow = screenWidth > 450 ? 3 : 2;
 
+  const tableHead = ['Úroveň', 'Skóre', 'Téma', 'Obtížnost'];
+  const tableData = [
+    ['1', '3', 'Matematika', 'Lehká'],
+    ['2', '2', 'Programování', 'Střední'],
+    ['3', '1', 'Historie', 'Těžká']
+  ];
+
+
   const startGame = () => {
     if (!selectedDifficulty || !selectedTopic) {
       setIsErrorModalVisible(true);
@@ -93,17 +101,34 @@ export default function Menu() {
           </View>
         </Modal>
   
-        {/* Tlačítko Zpět */}
-        <TouchableOpacity
-          onPress={() => router.push("/")}
-          className={`absolute top-5 left-0 px-4 py-2 rounded-full z-50 flex-row items-center ${
-            theme === "dark" ? "bg-gray-700" : "bg-gray-300"
-          }`}
-        >
-          <Icon name="arrow-back" size={24} color={theme === "dark" ? "white" : "black"} />
-          <Text className={`text-lg font-semibold ml-2 ${theme === "dark" ? "text-white" : "text-black"}`}>Zpět</Text>
-        </TouchableOpacity>
-  
+        <View className="absolute top-1 left-2 right-2 flex-row justify-between">
+          {/* Tlačítko Zpět */}
+          <TouchableOpacity
+            onPress={() => router.push("/")}
+            className={`flex-row items-center py-2 px-4 rounded-2xl ${
+              theme === "dark" ? "bg-gray-700" : "bg-gray-300"
+            }`}
+          >
+            <Icon name="arrow-back" size={24} color={theme === "dark" ? "white" : "black"} />
+            <Text className={`text-lg font-bold ml-2 ${theme === "dark" ? "text-white" : "text-black"}`}>
+              Zpět
+            </Text>
+          </TouchableOpacity>
+
+          {/* Tlačítko Herní postup */}
+          <TouchableOpacity
+            onPress={() => router.push("/progress")}
+            className={`flex-row items-center py-2 px-4 rounded-2xl ${
+              theme === "dark" ? "bg-gray-700" : "bg-gray-300"
+            }`}
+          >
+            <Icon name="bar-chart" size={24} color={theme === "dark" ? "white" : "black"} />
+            <Text className={`text-lg font-bold ml-2 ${theme === "dark" ? "text-white" : "text-black"}`}>
+              Herní postup
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Hlavní obsah */}
         <View className="w-full max-w-[400px] items-center top-12">
           <Text className={`text-4xl font-bold text-center mb-4 pt-10 ${theme === "dark" ? "text-white" : "text-black"}`}>

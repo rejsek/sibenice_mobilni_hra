@@ -21,11 +21,6 @@ export default function WinScreen() {
   const translateYAnim = useRef(new Animated.Value(300)).current;
   const [showConfetti, setShowConfetti] = useState(true);
   const [theme, setTheme] = useState("dark");
-
-  const opacityAnim = useRef(new Animated.Value(0)).current; // Začíná neviditelně
-  const scaleAnim = useRef(new Animated.Value(0.8)).current; // Začíná zmenšené
-
-  const [isAnimating, setIsAnimating] = useState(true); // Stav pro správné zavírání
   
   const screenWidth = Dimensions.get("window").width;
 
@@ -56,55 +51,16 @@ export default function WinScreen() {
   const stars = parsedWrongCount === 0 ? 3 : parsedWrongCount <= 2 ? 2 : parsedWrongCount <= 4 ? 1 : 0;
   const chosenImage = word ? imagesMap[word] : null;
 
-  useEffect(() => {
-    // Otevření obrazovky (fade-in + scale)
-    Animated.parallel([
-      Animated.timing(opacityAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
-
-  const closeScreen = () => {
-    // Spustíme animaci zavírání
-    Animated.parallel([
-      Animated.timing(opacityAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleAnim, {
-        toValue: 0.8,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      // Po dokončení animace navigujeme pryč
-      setIsAnimating(false);
-      router.push({ pathname: "/levels", params: { topic, difficulty } });
-    });
-  };
-
-  if (!isAnimating) return null; // Skryje obrazovku po animaci
-
   return (
-    <Animated.View
-    className="flex-1 items-center justify-center bg-gray-100 dark:bg-gray-900"
-    style={{ opacity: opacityAnim, transform: [{ scale: scaleAnim }] }}
-    >
-
-      <SafeAreaView className="flex-1 items-center justify-center bg-gray-100 dark:bg-gray-900">
-        {showConfetti && (
-          <ConfettiCannon count={200} origin={{ x: screenWidth / 2, y: screenHeight }} fadeOut />
-        )}
-    
+    <SafeAreaView className="flex-1 items-center justify-center bg-gray-100 dark:bg-gray-900">
+      {showConfetti && (
+        <ConfettiCannon count={200} origin={{ x: screenWidth / 2, y: screenHeight }} fadeOut />
+      )}
+  
+      <Animated.View
+        className="items-center mb-6"
+        style={{ transform: [{ translateY: translateYAnim }] }}
+      >
         <Text className="text-4xl font-bold text-center text-gray-900 dark:text-white">
           Úroveň dokončena!
         </Text>
@@ -116,96 +72,93 @@ export default function WinScreen() {
           </Text>
         </Text>
 
-        {/* Karta s hledaným slovem */}
-        <View className="p-5 rounded-xl mt-5 shadow-lg items-center bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600">    
-          {chosenImage && (
-            <Image
-              source={chosenImage}
-              style={{ width: screenWidth * 0.8, height: screenWidth * 0.7, marginTop: 10, marginBottom: 10 }}
-              resizeMode="contain"
-            />
-          )}
-        </View>
+      </Animated.View>
 
-        <Text className="text-lg mt-5 text-gray-700 dark:text-gray-300">
-          Dosažené skóre:
-        </Text>
-    
-        {/* Hvězdy s efektem */}
-        <View className="flex-row mt-3 mb-5 justify-center items-center">
-          {Array(3)
-            .fill(null)
-            .map((_, index) => {
-              const starScale = useRef(new Animated.Value(0)).current;
-              const pulseScale = useRef(new Animated.Value(1)).current;
-              const isActive = stars > index;
-    
-              useEffect(() => {
-                Animated.spring(starScale, {
-                  toValue: 1,
-                  friction: 4,
-                  tension: 100,
-                  useNativeDriver: true,
-                  delay: index * 200,
-                }).start(() => {
-                  if (isActive) {
-                    Animated.loop(
-                      Animated.sequence([
-                        Animated.timing(pulseScale, {
-                          toValue: 1.2,
-                          duration: 600,
-                          useNativeDriver: true,
-                        }),
-                        Animated.timing(pulseScale, {
-                          toValue: 1,
-                          duration: 600,
-                          useNativeDriver: true,
-                        }),
-                      ])
-                    ).start();
-                  }
-                });
-              }, []);
-    
-              return (
-                <Animated.Text
-                  key={index}
-                  style={{
-                    fontSize: isActive ? (stars === 3 && index === 1 ? 65 : 50) : 40,
-                    color: isActive ? "#FFD700" : "gray",
-                    marginHorizontal: 10,
-                    textShadowColor: isActive ? "rgba(255, 215, 0, 0.8)" : "transparent",
-                    textShadowOffset: { width: 0, height: 0 },
-                    textShadowRadius: isActive ? 8 : 0,
-                    transform: [{ scale: Animated.multiply(starScale, pulseScale) }],
-                  }}
-                >
-                  ★
-                </Animated.Text>
-              );
-            })}
-        </View>
-    
-        {/* Tlačítko "Další úroveň" */}
-        <TouchableOpacity
-            onPress={() => router.push({ pathname: "/game", params: { topic, difficulty, level: Number(level) + 1 } })}
-            className="py-4 rounded-lg items-center shadow-md bg-white dark:bg-gray-700"
-            style={{ width: screenWidth * 0.8 }} // 80% šířky obrazovky
-          >
-            <Text className="text-xl font-bold text-white">Další úroveň</Text>
-          </TouchableOpacity>
+      {/* Karta s hledaným slovem */}
+      <View className="p-5 rounded-xl shadow-lg items-center bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600">    
+        {chosenImage && (
+          <Image
+            source={chosenImage}
+            style={{ width: screenWidth * 0.8, height: screenWidth * 0.7, marginTop: 10, marginBottom: 10 }}
+            resizeMode="contain"
+          />
+        )}
+      </View>
 
-          <TouchableOpacity
-            onPress={closeScreen}
-            className="py-3 mt-3 rounded-lg items-center border-2 shadow-md border-gray-500 dark:border-gray-700 bg-gray-200 dark:bg-gray-800"
-            style={{ width: screenWidth * 0.8 }} // 80% šířky obrazovky
-          >
-          
-          <Text className="text-xl font-bold text-gray-900 dark:text-white">Zpět do menu</Text>
-        </TouchableOpacity>
-
-      </SafeAreaView>
-
-    </Animated.View>
+      <Text className="text-lg mt-5 text-gray-700 dark:text-gray-300">
+        Dosažené skóre:
+      </Text>
+  
+      {/* Hvězdy s efektem */}
+      <View className="flex-row mt-3 mb-5 justify-center items-center">
+        {Array(3)
+          .fill(null)
+          .map((_, index) => {
+            const starScale = useRef(new Animated.Value(0)).current;
+            const pulseScale = useRef(new Animated.Value(1)).current;
+            const isActive = stars > index;
+  
+            useEffect(() => {
+              Animated.spring(starScale, {
+                toValue: 1,
+                friction: 4,
+                tension: 100,
+                useNativeDriver: true,
+                delay: index * 200,
+              }).start(() => {
+                if (isActive) {
+                  Animated.loop(
+                    Animated.sequence([
+                      Animated.timing(pulseScale, {
+                        toValue: 1.2,
+                        duration: 600,
+                        useNativeDriver: true,
+                      }),
+                      Animated.timing(pulseScale, {
+                        toValue: 1,
+                        duration: 600,
+                        useNativeDriver: true,
+                      }),
+                    ])
+                  ).start();
+                }
+              });
+            }, []);
+  
+            return (
+              <Animated.Text
+                key={index}
+                style={{
+                  fontSize: isActive ? (stars === 3 && index === 1 ? 65 : 50) : 40,
+                  color: isActive ? "#FFD700" : "gray",
+                  marginHorizontal: 10,
+                  textShadowColor: isActive ? "rgba(255, 215, 0, 0.8)" : "transparent",
+                  textShadowOffset: { width: 0, height: 0 },
+                  textShadowRadius: isActive ? 8 : 0,
+                  transform: [{ scale: Animated.multiply(starScale, pulseScale) }],
+                }}
+              >
+                ★
+              </Animated.Text>
+            );
+          })}
+      </View>
+  
+      {/* Tlačítko "Další úroveň" */}
+      <TouchableOpacity
+        onPress={() => router.push({ pathname: "/game", params: { topic, difficulty, level: parsedLevel + 1 } })}
+        className="py-4 rounded-lg w-4/5 items-center shadow-md bg-white dark:bg-gray-700"
+      >
+        <Text className="text-xl font-bold text-white">Další úroveň</Text>
+      </TouchableOpacity>
+  
+      {/* Tlačítko "Hlavní menu" */}
+      <TouchableOpacity
+        onPress={() => router.push({ pathname: "/levels", params: { topic, difficulty } })}
+        className="py-3 mt-3 rounded-lg w-4/5 items-center border-2 shadow-md border-gray-500 dark:border-gray-700 bg-gray-200 dark:bg-gray-800"
+      >
+        <Text className="text-xl font-bold text-gray-900 dark:text-white">Zpět do menu</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 }
