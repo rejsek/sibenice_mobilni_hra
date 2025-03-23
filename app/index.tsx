@@ -4,11 +4,17 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect, useRef } from "react";
 
+/**
+ * Hlavni obrazovka aplikace - zobrazuje tlacitka pro spusteni hry, nastaveni a ukonceni.
+ */
 export default function Index() {
   const router = useRouter();
   const [theme, setTheme] = useState("dark");
+
+  // Reference na animaci tlacitka
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
+  // Nacteni tematu ze storage pri spusteni aplikace
   useEffect(() => {
     const loadTheme = async () => {
       try {
@@ -17,25 +23,25 @@ export default function Index() {
           setTheme(storedTheme);
         }
       } catch (error) {
-        console.error("Chyba při načítání tématu:", error);
+        console.error("Chyba pri nacitani tematu:", error);
       }
     };
 
     loadTheme();
   }, []);
 
+  // Spusteni animace pro tlacitko "Zacit hru"
   useEffect(() => {
-    // Animace tlačítka "Začít hru"
     Animated.loop(
       Animated.sequence([
         Animated.timing(scaleAnim, {
-          toValue: 1.05, // Jemné zvětšení
+          toValue: 1.05,
           duration: 1000,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
         Animated.timing(scaleAnim, {
-          toValue: 1, // Návrat na původní velikost
+          toValue: 1,
           duration: 1000,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
@@ -46,102 +52,59 @@ export default function Index() {
 
   return (
     <View
-      style={{
-        flex: 1,
-        backgroundColor: theme === "dark" ? "#1F2937" : "#FFFFFF",
-        paddingHorizontal: 24,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
+      className="flex-1 items-center justify-center px-6"
+      style={{ backgroundColor: theme === "dark" ? "#1F2937" : "#FFFFFF" }}
     >
-      <View style={{ width: "100%", maxWidth: 400, alignItems: "center" }}>
-        {/* Hlavní nadpis */}
+      <View className="w-full max-w-[400px] items-center">
+        {/* Nadpis */}
         <View
+          className="rounded-2xl px-10 py-6 mb-12 flex-row justify-center items-center border-4"
           style={{
-            borderWidth: 4,
-            borderColor: theme === "dark" ? "#4B5563" : "#D1D5DB",
-            borderRadius: 20,
-            paddingHorizontal: 40,
-            paddingVertical: 24,
-            marginBottom: 50, // Větší mezera pod nadpisem
             backgroundColor: theme === "dark" ? "#374151" : "#F3F4F6",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
+            borderColor: theme === "dark" ? "#4B5563" : "#D1D5DB",
           }}
         >
           <Text
+            className="text-center uppercase font-bold"
             style={{
               fontSize: 44,
-              fontWeight: "bold",
-              color: theme === "dark" ? "white" : "black",
-              textTransform: "uppercase",
+              color: theme === "dark" ? "#FFFFFF" : "#000000",
               letterSpacing: 3,
-              textAlign: "center",
             }}
           >
             ŠIBENICE
           </Text>
         </View>
 
-        {/* Tlačítko - Začít hru (s animací, ale pevná šířka) */}
+        {/* Tlacitko - Zacit hru */}
         <Animated.View style={{ width: "100%", transform: [{ scale: scaleAnim }] }}>
           <TouchableOpacity
-            onPress={() => router.push("/menu")}
+            className="bg-green-600 px-6 py-5 rounded-xl mb-6 w-full flex-row justify-center items-center"
             activeOpacity={0.8}
-            style={{
-              backgroundColor: "#16A34A",
-              paddingHorizontal: 24,
-              paddingVertical: 16,
-              borderRadius: 12,
-              marginBottom: 24, // Větší mezera
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            onPress={() => router.push("/menu")}
           >
-            <Icon name="play-arrow" size={28} color="white" />
-            <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", marginLeft: 8 }}>Začít hru</Text>
+            <Icon name="play-arrow" size={30} color="white" />
+            <Text className="text-white font-bold text-xl ml-2">Začít hru</Text>
           </TouchableOpacity>
         </Animated.View>
 
-        {/* Tlačítko - Nastavení */}
+        {/* Tlacitko - Nastaveni */}
         <TouchableOpacity
-          onPress={() => router.push("/settings")}
+          className="bg-blue-600 px-6 py-5 rounded-xl mb-6 w-full flex-row justify-center items-center"
           activeOpacity={0.8}
-          style={{
-            backgroundColor: "#2563EB",
-            paddingHorizontal: 24,
-            paddingVertical: 16,
-            borderRadius: 12,
-            marginBottom: 24, // Větší mezera
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          onPress={() => router.push("/settings")}
         >
-          <Icon name="settings" size={28} color="white" />
-          <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", marginLeft: 8 }}>Nastavení</Text>
+          <Icon name="settings" size={30} color="white" />
+          <Text className="text-white font-bold text-xl ml-2">Nastavení</Text>
         </TouchableOpacity>
 
-        {/* Tlačítko - Ukončit hru */}
+        {/* Tlacitko - Ukoncit hru */}
         <TouchableOpacity
+          className="bg-red-600 px-6 py-5 rounded-xl w-full flex-row justify-center items-center"
           activeOpacity={0.8}
-          style={{
-            backgroundColor: "#DC2626",
-            paddingHorizontal: 24,
-            paddingVertical: 16,
-            borderRadius: 12,
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
         >
-          <Icon name="exit-to-app" size={28} color="white" />
-          <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", marginLeft: 8 }}>Ukončit hru</Text>
+          <Icon name="exit-to-app" size={30} color="white" />
+          <Text className="text-white font-bold text-xl ml-2">Ukončit hru</Text>
         </TouchableOpacity>
       </View>
     </View>

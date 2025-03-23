@@ -5,27 +5,33 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-// Definujeme typ pro jednotlivé položky
+// Typ pro tlacitka (obtiznosti, temata)
 type ButtonItem = {
   name: string;
   color: string;
+  icon: string;
 };
 
-// Načtení JSON souboru
+// Nacteni statickych dat z JSONu
 const gameData: { difficultyLevels: ButtonItem[]; topics: ButtonItem[] } = require("./buttons.json");
 
+/**
+ * Obrazovka herniho menu - uzivatel zde vybira obtiznost a tema.
+ */
 export default function Menu() {
   const router = useRouter();
   const screenWidth = Dimensions.get("window").width;
+  const buttonsPerRow = screenWidth > 450 ? 3 : 2;
 
-  // Použití useState s konkrétním typem
+  // Stavy pro vybery a nastaveni
   const [difficultyLevels, setDifficultyLevels] = useState<ButtonItem[]>([]);
   const [topics, setTopics] = useState<ButtonItem[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
-  const [isErrorModalVisible, setIsErrorModalVisible] = useState<boolean>(false);
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
   const [theme, setTheme] = useState("dark");
 
+  // Nacteni tematu a hernich moznosti po nacteni komponenty
   useEffect(() => {
     setDifficultyLevels(gameData.difficultyLevels);
     setTopics(gameData.topics);
@@ -37,28 +43,14 @@ export default function Menu() {
           setTheme(storedTheme);
         }
       } catch (error) {
-        console.error("Chyba při načítání tématu:", error);
+        console.error("Chyba pri nacitani tematu:", error);
       }
     };
 
     loadTheme();
   }, []);
 
-  useEffect(() => {
-    setDifficultyLevels(gameData.difficultyLevels);
-    setTopics(gameData.topics);
-  }, []);
-
-  const buttonsPerRow = screenWidth > 450 ? 3 : 2;
-
-  const tableHead = ['Úroveň', 'Skóre', 'Téma', 'Obtížnost'];
-  const tableData = [
-    ['1', '3', 'Matematika', 'Lehká'],
-    ['2', '2', 'Programování', 'Střední'],
-    ['3', '1', 'Historie', 'Těžká']
-  ];
-
-
+  // Spusteni hry - kontrola vyberu
   const startGame = () => {
     if (!selectedDifficulty || !selectedTopic) {
       setIsErrorModalVisible(true);
@@ -82,8 +74,8 @@ export default function Menu() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Modální okno s chybou */}
-        <Modal visible={isErrorModalVisible} animationType="fade" transparent={true}>
+        {/* MODAL: chyba pri chybejicim vyberu */}
+        <Modal visible={isErrorModalVisible} animationType="fade" transparent>
           <View className="flex-1 justify-center items-center bg-black/70">
             <View className={`p-6 rounded-lg w-4/5 items-center ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
               <Icon name="error-outline" size={50} color="#DC2626" />
@@ -91,7 +83,7 @@ export default function Menu() {
               <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
                 Prosím, vyberte <Text className="font-bold">obtížnost</Text> i <Text className="font-bold">téma</Text> před spuštěním hry.
               </Text>
-              <TouchableOpacity 
+              <TouchableOpacity
                 className="bg-red-600 px-4 py-2 rounded-lg w-full"
                 onPress={() => setIsErrorModalVisible(false)}
               >
@@ -100,36 +92,27 @@ export default function Menu() {
             </View>
           </View>
         </Modal>
-  
+
+        {/* HORNÍ TLACITKA: zpet a herni postup */}
         <View className="absolute top-1 left-2 right-2 flex-row justify-between">
-          {/* Tlačítko Zpět */}
           <TouchableOpacity
             onPress={() => router.push("/")}
-            className={`flex-row items-center py-2 px-4 rounded-2xl ${
-              theme === "dark" ? "bg-gray-700" : "bg-gray-300"
-            }`}
+            className={`flex-row items-center py-2 px-4 rounded-2xl ${theme === "dark" ? "bg-gray-700" : "bg-gray-300"}`}
           >
             <Icon name="arrow-back" size={24} color={theme === "dark" ? "white" : "black"} />
-            <Text className={`text-lg font-bold ml-2 ${theme === "dark" ? "text-white" : "text-black"}`}>
-              Zpět
-            </Text>
+            <Text className={`text-lg font-bold ml-2 ${theme === "dark" ? "text-white" : "text-black"}`}>Zpět</Text>
           </TouchableOpacity>
 
-          {/* Tlačítko Herní postup */}
           <TouchableOpacity
             onPress={() => router.push("/progress")}
-            className={`flex-row items-center py-2 px-4 rounded-2xl ${
-              theme === "dark" ? "bg-gray-700" : "bg-gray-300"
-            }`}
+            className={`flex-row items-center py-2 px-4 rounded-2xl ${theme === "dark" ? "bg-gray-700" : "bg-gray-300"}`}
           >
             <Icon name="bar-chart" size={24} color={theme === "dark" ? "white" : "black"} />
-            <Text className={`text-lg font-bold ml-2 ${theme === "dark" ? "text-white" : "text-black"}`}>
-              Herní postup
-            </Text>
+            <Text className={`text-lg font-bold ml-2 ${theme === "dark" ? "text-white" : "text-black"}`}>Herní postup</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Hlavní obsah */}
+        {/* HLAVICKA */}
         <View className="w-full max-w-[400px] items-center top-12">
           <Text className={`text-4xl font-bold text-center mb-4 pt-10 ${theme === "dark" ? "text-white" : "text-black"}`}>
             ŠIBENICE
@@ -138,17 +121,15 @@ export default function Menu() {
             Sleduj svůj herní postup a zlepšuj své dovednosti.
             <Text className="font-semibold italic"> Ukaž svou soutěživost!</Text>
           </Text>
-  
-          {/* Nastavení hry */}
+
+          {/* NASTAVENI HRY */}
           <View className="w-full">
             <Text className={`text-2xl font-semibold mb-3 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
               Nastav svou hru
             </Text>
-  
-            {/* Výběr obtížnosti */}
-            <Text className={`text-md font-medium mb-2 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-              Obtížnost
-            </Text>
+
+            {/* VYBER OBTIZNOSTI */}
+            <Text className={`text-md font-medium mb-2 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>Obtížnost</Text>
             <View className="flex-row justify-between flex-wrap mb-6">
               {difficultyLevels.map((level, index) => (
                 <TouchableOpacity
@@ -161,15 +142,13 @@ export default function Menu() {
                   }}
                 >
                   <Icon name={level.icon} size={24} color="white" />
-                  <Text className="text-white text-lg text-center font-bold ml-2">{level.name}</Text>
+                  <Text className="text-white text-lg font-bold ml-2">{level.name}</Text>
                 </TouchableOpacity>
               ))}
             </View>
-  
-            {/* Výběr tématu */}
-            <Text className={`text-md font-medium mb-2 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-              Téma
-            </Text>
+
+            {/* VYBER TEMATU */}
+            <Text className={`text-md font-medium mb-2 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>Téma</Text>
             <View className="flex-row flex-wrap justify-between">
               {topics.map((topic, index) => (
                 <TouchableOpacity
@@ -182,28 +161,23 @@ export default function Menu() {
                   }}
                 >
                   <Icon name={topic.icon} size={24} color="white" />
-                  <Text className="text-white text-lg text-center font-bold ml-2">{topic.name}</Text>
+                  <Text className="text-white text-lg font-bold ml-2">{topic.name}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           </View>
-  
-          {/* Tlačítko Hrát */}
+
+          {/* TLACITKO HRAT */}
           <TouchableOpacity
-            className={`px-10 py-4 rounded-full mt-8 flex-row items-center justify-center ${
-              theme === "dark" ? "shadow-lg shadow-black" : ""
-            }`}
             onPress={startGame}
-            style={{
-              backgroundColor: "#16A34A",
-              marginBottom: 20,
-            }}
+            className={`px-10 py-5 rounded-full mt-8 flex-row items-center justify-center ${theme === "dark" ? "shadow-lg shadow-black" : ""}`}
+            style={{ backgroundColor: "#16A34A", marginBottom: 20 }}
           >
             <Icon name="play-arrow" size={28} color="white" />
-            <Text className="text-white text-xl font-semibold text-center ml-2">Hrát</Text>
+            <Text className="text-white text-xl font-semibold ml-2">Hrát</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
-  );  
+  );
 }
