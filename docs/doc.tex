@@ -1,559 +1,94 @@
 \documentclass[a4paper,12pt]{article}
-
 \usepackage[czech]{babel}
-\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection.}{1em}{}
+\setlength{\parskip}{0.5em}
 
-\title{Dokumentace k projektu \textbf{Šibenice}}
+\title{\textbf{Dokumentace mobilní hry Šibenice}}
 \author{}
-\date{\today}
+\date{}
 
 \begin{document}
-
 \maketitle
 
 \section{Úvod}
+Mobilní hra \textbf{Šibenice} je interaktivní vzdělávací hra vytvořená pomocí frameworku React Native s využitím Expo a Tailwind CSS. Hra je založena na klasické slovní hádance Šibenice, kde uživatel hádá tajné slovo dle tematického okruhu a obtížnosti.
 
-Tento dokument slouží jako technická dokumentace k projektu \textbf{Šibenice}, což je mobilní hra určená pro platformy \textbf{Android} a \textbf{iOS}. 
-Hra je postavena na technologii \textbf{React Native} s využitím frameworku \textbf{Expo} a poskytuje uživatelsky přívětivé rozhraní pro procvičování slovní zásoby z různých kategorií.
+Cílem hry je uhodnout hledané slovo s co nejmenším počtem chyb a získat tak maximální počet hvězd. Hra je lokalizovaná pro české uživatele a podporuje tmavý i světlý režim.
 
-Hlavním cílem aplikace je vytvořit interaktivní a edukativní herní prostředí, které uživateli umožní hravou formou testovat a rozvíjet slovní zásobu. 
-Hra zahrnuje různé obtížnosti, skórovací systém a možnosti přizpůsobení. 
+\section{Použité technologie a struktura projektu}
 
-Tato dokumentace pokrývá následující oblasti:
-\begin{itemize}
-    \item Architektura a technologie použité v aplikaci,
-    \item Popis implementace a struktury kódu,
-    \item Instrukce ke spuštění aplikace,
-    \item Přehled funkcionalit a jejich využití,
-    \item Ukázky obrazovek a jejich popis.
+\begin{itemize}[leftmargin=*]
+  \item \textbf{React Native (Expo)} – cross-platformový framework pro vývoj mobilní aplikace pro iOS a Android.
+  \item \textbf{TypeScript} – silně typovaná verze JavaScriptu pro bezpečnější kód.
+  \item \textbf{Tailwind CSS (twrnc)} – utility-first framework pro styling přímo v komponentách.
+  \item \textbf{AsyncStorage} – pro lokální ukládání nastavení, skóre a preferencí.
+  \item \textbf{react-native-chart-kit} – pro vykreslování koláčových grafů v sekci herního postupu.
 \end{itemize}
 
-Cílem dokumentace je poskytnout podrobný přehled o vývoji aplikace a umožnit její rozšiřování nebo úpravy v budoucnu.
+Struktura aplikace je rozdělena do složek dle obrazovek (např. /settings.tsx, /game.tsx), sdílených dat (např. words.json, buttons.json) a komponent (např. TreeView, imageMap). 
 
-\section{Architektura aplikace}
+\section{Herní mechanika a logika}
 
-Aplikace \textbf{Šibenice} je postavena na technologii \textbf{React Native} a využívá framework \textbf{Expo}, který zjednodušuje vývoj, testování a nasazení mobilních aplikací. Struktura projektu je navržena modulárně, aby byla umožněna snadná údržba a rozšiřitelnost funkcionalit.
+\subsection{Princip hry}
+Uživatel si vybere téma a obtížnost a poté si zvolí jednu z dostupných úrovní. Každá úroveň odpovídá jednomu slovu, které musí uživatel uhodnout zadáváním písmen. Po částečném nebo úplném uhodnutí slova se vypisuje aktuální stav slova a chyb.
 
-\subsection{Modulární přístup}
-Projekt je rozdělen do jednotlivých komponent, které pokrývají různé funkční části aplikace. Mezi klíčové moduly patří:
+\subsection{Skóre a hvězdy}
+Každé slovo má přidělený počet hvězd podle úspěšnosti (počet chyb):
 \begin{itemize}
-    \item \textbf{Hlavní obrazovka (Menu)} – výběr tématu a obtížnosti,
-    \item \textbf{Obrazovka s úrovněmi (Levels)} – seznam dostupných úrovní pro zvolené téma a obtížnost,
-    \item \textbf{Herní obrazovka (Game)} – samotný průběh hry, zobrazení šibenice a hádání písmen,
-    \item \textbf{Výherní obrazovka (Win)} – animace a skórování po úspěšném dokončení úrovně,
-    \item \textbf{Nastavení (Settings)} – možnosti přizpůsobení hry, včetně zvuků, tématu a obtížnosti.
+  \item 3 hvězdy – bez chyby
+  \item 2 hvězdy – max. 2 chyby
+  \item 1 hvězda – max. 4 chyby
+  \item 0 hvězd – příliš chyb nebo vypršel čas
 \end{itemize}
 
-\subsection{Navigace v aplikaci}
-Aplikace využívá systém navigace \textbf{Expo Router}, který umožňuje přehlednou správu jednotlivých obrazovek a přechod mezi nimi. Navigace je založena na hierarchickém uspořádání stránek:
-
+\subsection{Zvláštní pravidla}
 \begin{itemize}
-    \item \texttt{index.tsx} – hlavní stránka aplikace,
-    \item \texttt{menu.tsx} – přechod na výběr tématu a obtížnosti,
-    \item \texttt{levels.tsx} – seznam úrovní pro konkrétní téma a obtížnost,
-    \item \texttt{game.tsx} – samotná hra,
-    \item \texttt{win.tsx} – obrazovka s oznámením o výhře,
-    \item \texttt{settings.tsx} – nastavení aplikace.
+  \item Volitelné omezení počtu pokusů nebo časový limit (dle nastavení).
+  \item Každé slovo má nápovědu, která je dostupná na začátku hry.
+  \item Hra podporuje vibrace při chybě (pokud je zapnuto).
 \end{itemize}
 
-Každá z těchto obrazovek je samostatná komponenta, která komunikuje s ostatními částmi aplikace pomocí parametrů v navigaci.
+\section{Práce s daty a uložení}
 
-\subsection{Ukládání dat}
-Aplikace využívá \textbf{AsyncStorage} pro uchování uživatelských preferencí a skóre. Hlavní uložené informace zahrnují:
+\subsection{Uložení nastavení a skóre}
+Aplikace ukládá uživatelské nastavení (hudba, zvuk, vibrace, téma, limit) do \texttt{AsyncStorage}. Stejným způsobem se ukládá i skóre jednotlivých slov (maximální dosažený počet hvězd).
+
+\subsection{Datové soubory}
 \begin{itemize}
-    \item \textbf{Nastavení uživatele} – barevné téma, zvuky, vibrace, časový limit.
-    \item \textbf{Skóre} – uložené nejlepší výsledky pro jednotlivá slova a úrovně.
+  \item \texttt{words.json} – obsahuje seznam slov rozdělených podle témat a obtížnosti.
+  \item \texttt{buttons.json} – obsahuje metainformace o obtížnostech a tématech (barva, ikona).
+  \item \texttt{imageMap.tsx} – mapuje konkrétní slova na výherní obrázky.
 \end{itemize}
 
-\subsection{Použité knihovny}
-Aplikace se opírá o několik knihoven pro usnadnění vývoje a vylepšení uživatelského rozhraní:
-\begin{itemize}
-    \item \texttt{react-native-vector-icons} – ikony pro vizuální prvky,
-    \item \texttt{react-native-progress} – ukazatel průběhu ve hře,
-    \item \texttt{react-native-confetti-cannon} – animace oslav při výhře,
-    \item \texttt{expo-router} – správa navigace mezi obrazovkami.
-\end{itemize}
-
-\section{Hlavní funkcionality aplikace}
-
-Aplikace \textbf{Šibenice} obsahuje několik klíčových funkcionalit, které umožňují interaktivní a dynamickou hratelnost. Tyto funkcionality zahrnují výběr témat a obtížností, správu skóre, časový limit a vizuální zpětnou vazbu.
-
-\subsection{Výběr tématu a obtížnosti}
-
-Při spuštění hry si uživatel nejprve zvolí herní téma a úroveň obtížnosti. Témata jsou rozdělena do několika kategorií, jako například:
-\begin{itemize}
-    \item \textbf{Zvířata},
-    \item \textbf{Cestování},
-    \item \textbf{Jídlo},
-    \item \textbf{Auta},
-    \item \textbf{Technologie},
-    \item \textbf{Filmy},
-    \item \textbf{Historie},
-    \item \textbf{Věda} a další.
-\end{itemize}
-
-Obtížnosti jsou rozděleny na tři úrovně:
-\begin{itemize}
-    \item \textbf{Začátečník} – jednodušší slova s více nápovědami,
-    \item \textbf{Pokročilý} – střední úroveň obtížnosti s méně nápovědami,
-    \item \textbf{Expert} – nejtěžší úroveň, často se složitějšími slovy.
-\end{itemize}
-
-Výběr obtížnosti ovlivňuje herní mechaniku, například počet pokusů na uhodnutí slova.
-
-\subsection{Průběh hry a pravidla}
-
-Hráč hádá slovo zadáváním jednotlivých písmen. Pokud se písmeno nachází ve slově, je odhaleno na správných pozicích. Pokud ne, je hráči odečten jeden pokus. Hra je ukončena v těchto případech:
-\begin{itemize}
-    \item Hráč správně uhodne celé slovo – zobrazí se animace výhry a přidělené skóre.
-    \item Hráč vyčerpá maximální počet nesprávných pokusů – zobrazí se obrazovka s neúspěchem.
-    \item Vyprší časový limit (pokud je aktivován) – hráč automaticky prohrává kolo.
-\end{itemize}
-
-\subsection{Skórovací systém}
-
-Každé slovo lze ohodnotit na základě počtu chyb. Skórování probíhá podle těchto pravidel:
-\begin{itemize}
-    \item \textbf{3 hvězdy} – žádná chyba,
-    \item \textbf{2 hvězdy} – maximálně 2 chyby,
-    \item \textbf{1 hvězda} – maximálně 4 chyby,
-    \item \textbf{0 hvězd} – více než 4 chyby.
-\end{itemize}
-
-Skóre se ukládá pomocí \textbf{AsyncStorage} a při opětovném hraní stejné úrovně se započítá nejvyšší dosažené skóre.
-
-\subsection{Nápovědy}
-
-Pro usnadnění hry je k dispozici nápověda, která poskytuje krátký popis hádaného slova. Nápovědu lze zobrazit kliknutím na odpovídající tlačítko.
-
-\subsection{Časový limit a pokusy}
-
-Hra podporuje možnost nastavení časového limitu pro dokončení úrovně. Pokud je aktivován, odpočítává se čas a při jeho vypršení hra automaticky končí prohrou. Dále lze aktivovat omezený počet pokusů na hádání slova.
-
-\subsection{Animace a vizuální efekty}
-
-Aplikace využívá různé vizuální efekty pro zvýšení interaktivity:
-\begin{itemize}
-    \item Animace konfet při výhře (\textbf{ConfettiCannon}),
-    \item Ukazatel průběhu (\textbf{react-native-progress}),
-    \item Vibrace zařízení při nesprávné odpovědi (pokud je aktivována).
-\end{itemize}
-
-\section{Uživatelské rozhraní a navigace}
-
-Aplikace \textbf{Šibenice} využívá moderní a přehledné uživatelské rozhraní založené na komponentách \textbf{React Native}. Rozhraní je optimalizováno pro mobilní zařízení s různými velikostmi obrazovek a podporuje přepínání mezi světlým a tmavým režimem.
-
-\subsection{Hlavní obrazovky aplikace}
-
-Aplikace se skládá z několika hlavních obrazovek, mezi kterými se uživatel může pohybovat prostřednictvím navigačního systému \textbf{Expo Router}:
+\section{Popis jednotlivých obrazovek}
 
 \begin{itemize}
-    \item \textbf{Úvodní obrazovka (index.tsx)} – zobrazuje logo aplikace a základní možnosti (spuštění hry, nastavení).
-    \item \textbf{Hlavní menu (menu.tsx)} – umožňuje výběr tématu a obtížnosti.
-    \item \textbf{Seznam úrovní (levels.tsx)} – zobrazuje dostupné úrovně s vizuální indikací dosaženého skóre.
-    \item \textbf{Herní obrazovka (game.tsx)} – obsahuje interaktivní herní plochu s možností hádání slov.
-    \item \textbf{Obrazovka výhry (win.tsx)} – zobrazí se po úspěšném dokončení úrovně.
-    \item \textbf{Obrazovka nastavení (settings.tsx)} – umožňuje změnit téma, zvuk, vibrace a další nastavení.
+  \item \textbf{Hlavní menu (\texttt{index.tsx})} – vstupní obrazovka s tlačítky: Začít hru, Nastavení, Ukončit.
+  \item \textbf{Nastavení (\texttt{settings.tsx})} – volby pro téma, zvuky, vibrace, limit, reset hry.
+  \item \textbf{Herní menu (\texttt{menu.tsx})} – výběr obtížnosti a tématu.
+  \item \textbf{Úrovně (\texttt{levels.tsx})} – seznam dostupných úrovní dle výběru.
+  \item \textbf{Hra (\texttt{game.tsx})} – hlavní logika hry, ovládání písmeny, zobrazení šibenice, nápověda.
+  \item \textbf{Postup (\texttt{progress.tsx})} – stromové zobrazení výsledků s koláčovým grafem.
+  \item \textbf{Výhra (\texttt{win.tsx})} – animace, hvězdy, obrázek a možnost pokračování.
 \end{itemize}
 
-\subsection{Hlavní menu}
-
-Po spuštění aplikace se uživateli zobrazí hlavní menu, kde si může vybrat téma hry a úroveň obtížnosti. Menu je přehledně rozvržené do kategorií, které jsou barevně odlišeny:
+\section{Platformy a SDK}
 
 \begin{itemize}
-    \item Každé téma je reprezentováno ikonou a barvou (např. \textbf{Zvířata} – oranžová, \textbf{Technologie} – modrá).
-    \item Obtížnosti mají vlastní barevné kódování: \textbf{Začátečník} (modrá), \textbf{Pokročilý} (oranžová), \textbf{Expert} (červená).
+  \item \textbf{Platformy:} Android, iOS
+  \item \textbf{Minimální SDK:} Expo SDK 50 (React Native 0.73)
+  \item Aplikace funguje na zařízeních s Android 7.0+ a iOS 13+
+  \item Optimalizováno pro telefony i tablety
 \end{itemize}
-
-\subsection{Herní obrazovka}
-
-Herní obrazovka je navržena tak, aby byla co nejintuitivnější:
-\begin{itemize}
-    \item Zobrazuje aktuální slovo jako sérii podtržítek, kde se postupně doplňují správně uhodnutá písmena.
-    \item Pod hádaným slovem je abecední klávesnice, která umožňuje výběr písmen.
-    \item Indikátor pokusů (v případě omezených pokusů) nebo odpočet času (pokud je aktivován časový limit).
-    \item Možnost zobrazení nápovědy.
-\end{itemize}
-
-Při správném uhodnutí slova se zobrazí animace výhry a přesměrování na obrazovku s výsledkem.
-
-\subsection{Obrazovka výsledku}
-
-Po dokončení úrovně se uživateli zobrazí stránka s výsledkem:
-\begin{itemize}
-    \item Počet hvězd (hodnocení dle počtu chyb),
-    \item Možnost pokračovat na další úroveň nebo se vrátit do menu,
-    \item Krátká animace konfet pro zvýraznění výhry.
-\end{itemize}
-
-\subsection{Navigace mezi obrazovkami}
-
-Navigace mezi obrazovkami probíhá prostřednictvím \textbf{Expo Router}, který umožňuje přehledné a efektivní řízení přechodů. Každá stránka aplikace je reprezentována samostatnou komponentou a mezi stránkami se přechází pomocí parametrů v URL.
-
-Uživatel může navigovat:
-\begin{itemize}
-    \item \textbf{Tlačítky zpět} – návrat na předchozí stránku (např. zpět do menu),
-    \item \textbf{Automatickými přechody} – po dokončení úrovně je hráč přesměrován na výsledkovou obrazovku,
-    \item \textbf{Přímým výběrem} – uživatel si může kdykoliv vybrat jinou úroveň v seznamu úrovní.
-\end{itemize}
-
-\subsection{Přizpůsobení vzhledu}
-
-Aplikace podporuje přepínání mezi světlým a tmavým režimem, které se nastavuje v sekci \textbf{Nastavení}. Volba se ukládá pomocí \textbf{AsyncStorage} a při dalším spuštění se automaticky obnoví.
-
-\section{Technická implementace a struktura kódu}
-
-Aplikace \textbf{Šibenice} je postavena na moderním technologickém stacku s využitím \textbf{React Native} a \textbf{Expo}. Kód je rozdělen do několika modulů, což umožňuje snadnou údržbu a rozšiřitelnost projektu.
-
-\subsection{Adresářová struktura}
-
-Projekt je organizován podle doporučených postupů pro aplikace v \textbf{Expo Router}. Hlavní složky jsou následující:
-
-\begin{verbatim}
-/
-|-- assets/              % Obsahuje fonty, obrázky a zvuky
-|-- components/          % Opakovaně použitelné React komponenty
-|-- screens/             % Hlavní obrazovky aplikace
-|   |-- Game.tsx        % Herní obrazovka
-|   |-- Menu.tsx        % Výběr tématu a obtížnosti
-|   |-- Levels.tsx      % Seznam úrovní
-|   |-- Win.tsx         % Obrazovka výhry
-|   |-- Settings.tsx    % Nastavení hry
-|   |-- Index.tsx       % Úvodní obrazovka aplikace
-|-- data/                % JSON soubory se slovy a nastavením
-|   |-- words.json      % Slova podle témat a obtížností
-|   |-- buttons.json    % Konfigurace tlačítek pro menu
-|-- utils/               % Pomocné funkce a utility
-|-- App.tsx              % Hlavní soubor aplikace
-|-- package.json         % Konfigurace balíčků
-\end{verbatim}
-
-Tato struktura umožňuje jasné oddělení jednotlivých částí aplikace.
-
-\subsection{Klíčové komponenty}
-
-Každá část aplikace je implementována jako samostatná komponenta v souboru \texttt{.tsx}. Mezi nejdůležitější komponenty patří:
-
-\subsubsection{Game.tsx – herní logika}
-
-\begin{itemize}
-    \item Obsahuje hlavní herní mechanismus.
-    \item Načítá slova z JSON souboru podle zvoleného tématu a obtížnosti.
-    \item Sleduje správné a nesprávné odpovědi.
-    \item Zobrazuje šibenici a progres hráče.
-    \item Při výhře nebo prohře přesměrovává hráče na odpovídající obrazovku.
-\end{itemize}
-
-\subsubsection{Menu.tsx – výběr tématu a obtížnosti}
-
-\begin{itemize}
-    \item Obsahuje seznam témat a obtížností, které jsou načítány z JSON souboru.
-    \item Při výběru se parametry předávají na stránku \texttt{Levels.tsx}.
-    \item Každé téma a obtížnost mají unikátní barvu a ikonu.
-\end{itemize}
-
-\subsubsection{Levels.tsx – seznam úrovní}
-
-\begin{itemize}
-    \item Načítá seznam úrovní na základě zvoleného tématu a obtížnosti.
-    \item Indikuje dosažené skóre pomocí hvězdiček.
-    \item Přesměrovává hráče na \texttt{Game.tsx} s odpovídající úrovní.
-\end{itemize}
-
-\subsubsection{Win.tsx – obrazovka vítězství}
-
-\begin{itemize}
-    \item Zobrazuje hráči dosažené skóre a efekt konfet.
-    \item Poskytuje možnosti pokračování na další úroveň nebo návrat do menu.
-\end{itemize}
-
-\subsubsection{Settings.tsx – nastavení hry}
-
-\begin{itemize}
-    \item Umožňuje změnu tématu aplikace (tmavý/světlý režim).
-    \item Nabízí možnost aktivace/deaktivace zvuků a vibrací.
-    \item Umožňuje nastavení časového limitu pro hru.
-    \item Všechna nastavení se ukládají pomocí \textbf{AsyncStorage}.
-\end{itemize}
-
-\subsection{Práce s daty}
-
-Aplikace využívá soubory JSON pro uchování herních dat:
-
-\begin{itemize}
-    \item \textbf{words.json} – obsahuje slova, jejich kategorie a nápovědy.
-    \item \textbf{buttons.json} – obsahuje seznam obtížností a témat s barvami a ikonami.
-    \item \textbf{AsyncStorage} – ukládá skóre hráče a uživatelská nastavení.
-\end{itemize}
-
-\subsection{Příklad práce s AsyncStorage}
-
-Kód pro načtení a uložení skóre hráče:
-
-\begin{verbatim}
-const loadScores = async () => {
-    try {
-        const savedScores = await AsyncStorage.getItem("score");
-        if (savedScores) {
-            setScoreData(JSON.parse(savedScores));
-        }
-    } catch (error) {
-        console.error("Chyba při načítání skóre:", error);
-    }
-};
-
-const saveScore = async (word: string, newScore: number) => {
-    try {
-        const oldScore = scoreData[word] ?? 0;
-        const betterScore = Math.max(oldScore, newScore);
-        const updatedScoreData = { ...scoreData, [word]: betterScore };
-
-        await AsyncStorage.setItem("score", JSON.stringify(updatedScoreData));
-        setScoreData(updatedScoreData);
-    } catch (error) {
-        console.error("Chyba při ukládání skóre:", error);
-    }
-};
-\end{verbatim}
-
-Tento mechanismus umožňuje uložení nejlepšího skóre pro jednotlivá slova.
-
-\section{Testování, ladění a nasazení aplikace}
-
-V této kapitole jsou popsány způsoby testování a ladění aplikace během vývoje a postupy potřebné pro její nasazení na mobilní platformy Android a iOS.
-
-\subsection{Testování aplikace}
-
-Testování aplikace probíhá v několika fázích:
-\begin{itemize}
-    \item \textbf{Vývojové testování} – průběžné testování funkcionalit během vývoje.
-    \item \textbf{Automatizované testy} – kontrola správnosti funkcí pomocí testovacích knihoven.
-    \item \textbf{Testování na fyzických zařízeních} – ověření chování aplikace v reálných podmínkách.
-\end{itemize}
-
-\subsubsection{Vývojové testování v Expo}
-Během vývoje je aplikace spouštěna v Expo Developer Tools pomocí příkazu:
-
-\begin{verbatim}
-npx expo start
-\end{verbatim}
-
-Tento nástroj umožňuje:
-\begin{itemize}
-    \item Spouštění aplikace v emulátorech i na fyzických zařízeních (Android/iOS).
-    \item Automatický reload při změnách kódu (\textit{Fast Refresh}).
-    \item Přístup ke konzoli pro ladění chyb v kódu.
-\end{itemize}
-
-\subsubsection{Automatizované testy}
-
-Aplikace může využívat testovací frameworky jako:
-\begin{itemize}
-    \item \textbf{Jest} – testování jednotlivých funkcí aplikace.
-    \item \textbf{React Native Testing Library} – simulace interakce s uživatelským rozhraním.
-\end{itemize}
-
-Příklad základního testu pro ověření existence komponenty:
-
-\begin{verbatim}
-import { render } from "@testing-library/react-native";
-import Game from "../screens/Game";
-
-test("Zkontroluje renderování herní obrazovky", () => {
-    const { getByText } = render(<Game />);
-    expect(getByText("Hádej slovo")).toBeTruthy();
-});
-\end{verbatim}
-
-\subsubsection{Testování na fyzických zařízeních}
-
-Testování na reálných mobilních zařízeních se provádí pomocí:
-\begin{itemize}
-    \item \textbf{Expo Go} – umožňuje spustit aplikaci na mobilu bez nutnosti jejího sestavení.
-    \item \textbf{Android Emulator / iOS Simulator} – simulace aplikace v prostředí dané platformy.
-    \item \textbf{TestFlight} – distribuce testovacích verzí aplikace pro iOS.
-\end{itemize}
-
-\subsection{Ladění aplikace}
-
-Expo poskytuje vestavěné nástroje pro ladění:
-\begin{itemize}
-    \item \textbf{React Developer Tools} – umožňuje inspekci komponent v reálném čase.
-    \item \textbf{Debugging Console} – pro zobrazení chyb a výstupů z konzole.
-    \item \textbf{Remote Debugging} – možnost ladění kódu přímo v prohlížeči.
-\end{itemize}
-
-\subsubsection{Ladění chyb pomocí výpisů do konzole}
-
-V případě chyb lze použít \texttt{console.log()} pro diagnostiku:
-
-\begin{verbatim}
-useEffect(() => {
-    console.log("Aktuální téma:", topic);
-}, [topic]);
-\end{verbatim}
-
-Další možnosti ladění zahrnují použití breakpoints v Chrome DevTools.
-
-\subsection{Nasazení aplikace}
-
-Aplikace může být nasazena dvěma způsoby:
-\begin{itemize}
-    \item \textbf{Expo Managed Workflow} – snadné sestavení a distribuce pomocí Expo Cloud Build.
-    \item \textbf{Eject do Bare Workflow} – přechod na nativní vývoj s možností integrace nativních modulů.
-\end{itemize}
-
-\subsubsection{Příprava na produkční sestavení}
-
-Pro nasazení je nutné vytvořit optimalizovanou verzi aplikace:
-
-\begin{verbatim}
-eas build --platform android
-eas build --platform ios
-\end{verbatim}
-
-Tento proces vygeneruje instalační soubory \texttt{.apk} nebo \texttt{.aab} pro Android a \texttt{.ipa} pro iOS.
-
-\subsubsection{Publikace na Google Play a App Store}
-
-Publikace aplikace probíhá v několika krocích:
-\begin{enumerate}
-    \item Registrace vývojářského účtu na \textbf{Google Play Console} nebo \textbf{Apple Developer Program}.
-    \item Nahrání sestavené aplikace do příslušného obchodu.
-    \item Vyplnění metadat (popis, obrázky, kategorie).
-    \item Odeslání k recenzi a schválení.
-\end{enumerate}
-
-Pro usnadnění nasazení lze využít příkaz:
-
-\begin{verbatim}
-eas submit --platform android
-\end{verbatim}
-
-\section{Budoucí vylepšení a možné rozšíření}
-
-Aplikace \textbf{Šibenice} poskytuje stabilní a dobře strukturovaný základ, který umožňuje její další rozšiřování. Tato kapitola se zabývá návrhy možných vylepšení, která mohou zvýšit uživatelský komfort a rozšířit funkcionalitu aplikace.
-
-\subsection{Možná rozšíření funkcionality}
-
-\subsubsection{Online multiplayer mód}
-
-Jednou z nejzajímavějších možností rozšíření je implementace \textbf{multiplayer režimu}, kde by hráči mohli hrát proti sobě v reálném čase. Tento režim by mohl zahrnovat:
-\begin{itemize}
-    \item Připojení k online serveru a možnost pozvat přátele ke hře.
-    \item Systém bodování a žebříčku nejlepších hráčů.
-    \item Možnost hraní proti náhodným soupeřům.
-\end{itemize}
-
-Technologicky by multiplayer mohl být postaven na \textbf{WebSockets} nebo \textbf{Firebase Realtime Database} pro synchronizaci hry mezi hráči.
-
-\subsubsection{Personalizovaný tréninkový režim}
-
-Aplikace by mohla obsahovat \textbf{tréninkový režim}, kde by hráči mohli procvičovat konkrétní slova nebo tematické okruhy dle vlastního výběru. Možné funkce:
-\begin{itemize}
-    \item Výběr obtížnosti na základě historie hráče.
-    \item Statistické vyhodnocení pokroků ve slovní zásobě.
-    \item Možnost opakování slov, která hráč neuhodl.
-\end{itemize}
-
-\subsubsection{Vylepšený systém nápovědy}
-
-Současná nápověda poskytuje pouze textový popis slova. Možná vylepšení:
-\begin{itemize}
-    \item Zobrazení obrázkové nápovědy (přidání obrázků k jednotlivým slovům).
-    \item Možnost odhalení prvního nebo posledního písmene jako součást nápovědy.
-    \item Systém odemykatelných nápověd na základě nasbíraného skóre.
-\end{itemize}
-
-\subsubsection{Tématické události a výzvy}
-
-Aplikace by mohla nabízet \textbf{časově omezené výzvy}, které by motivovaly hráče k pravidelnému hraní. Možné implementace:
-\begin{itemize}
-    \item Speciální týdenní/měsíční výzvy se zaměřením na určitá témata.
-    \item Sezónní události (např. vánoční, letní edice s novými slovy).
-    \item Odměny za dokončení výzev, například nové vizuální motivy aplikace.
-\end{itemize}
-
-\subsection{Vylepšení uživatelského rozhraní a designu}
-
-\subsubsection{Možnosti personalizace vzhledu}
-Aplikace by mohla umožnit větší \textbf{personalizaci vzhledu} podle preferencí uživatele:
-\begin{itemize}
-    \item Možnost výběru barevného schématu aplikace.
-    \item Různé vizuální styly šibenice.
-    \item Možnost změny fontu a velikosti písma.
-\end{itemize}
-
-\subsubsection{Animace a efekty}
-Zlepšení vizuálních efektů by mohlo aplikaci zpříjemnit pro hráče:
-\begin{itemize}
-    \item Plynulé animace při zadávání písmen.
-    \item Efekty zvýraznění při správném/špatném odhadu.
-    \item Animovaný progres indikující postup ve hře.
-\end{itemize}
-
-\subsection{Lepší integrace s externími službami}
-
-\subsubsection{Ukládání progresu na cloud}
-Možná implementace ukládání dat do cloudu, aby hráč nepřišel o svůj postup:
-\begin{itemize}
-    \item Integrace s \textbf{Firebase} nebo jinou cloudovou službou pro synchronizaci dat mezi zařízeními.
-    \item Přihlášení pomocí Google/Facebook pro zálohování progresu.
-\end{itemize}
-
-\subsubsection{Podpora více jazyků}
-Aplikace by mohla být rozšířena o podporu více jazyků:
-\begin{itemize}
-    \item Možnost přepnutí mezi různými jazyky hry.
-    \item Slovníky přizpůsobené pro různé jazykové mutace.
-\end{itemize}
-
-\subsection{Optimalizace výkonu}
-
-Pro lepší výkon aplikace by bylo možné:
-\begin{itemize}
-    \item Zredukovat velikost balíčku odstraněním nepotřebných knihoven.
-    \item Optimalizovat načítání slov a assetů pro rychlejší odezvu aplikace.
-    \item Použití \textbf{Hermes Engine} pro efektivnější běh aplikace na Androidu.
-\end{itemize}
-
-\section{Závěr}
-
-Tato dokumentace poskytuje ucelený přehled o vývoji, architektuře, funkcionalitě a možnostech rozšíření mobilní hry \textbf{Šibenice}. Aplikace byla navržena jako interaktivní a edukativní hra, která umožňuje hráčům procvičovat slovní zásobu z různých tematických oblastí.
-
-Hlavní přínosy aplikace:
-\begin{itemize}
-    \item Podpora multiplatformního vývoje pro \textbf{Android} a \textbf{iOS}.
-    \item Snadná rozšiřitelnost díky použití \textbf{React Native} a \textbf{Expo}.
-    \item Intuitivní uživatelské rozhraní a přizpůsobitelná herní mechanika.
-    \item Ukládání herního progresu pomocí \textbf{AsyncStorage}.
-    \item Možnost budoucích vylepšení, včetně online multiplayeru, cloudového ukládání a širší personalizace.
-\end{itemize}
-
-\subsection{Shrnutí vývoje}
-
-Během vývoje byly použity moderní technologie, které usnadňují správu kódu a optimalizují výkon aplikace. Klíčové části implementace zahrnovaly:
-\begin{itemize}
-    \item Implementaci navigace mezi obrazovkami pomocí \textbf{Expo Router}.
-    \item Použití knihovny \textbf{react-native-vector-icons} pro vizuální zlepšení.
-    \item Integraci zvukových efektů a animací pro lepší uživatelský zážitek.
-    \item Strukturované zpracování dat uložených ve formátu \textbf{JSON}.
-    \item Možnost přepínání mezi světlým a tmavým režimem.
-\end{itemize}
-
-\subsection{Další kroky}
-
-V současné verzi aplikace je základní herní funkcionalita plně funkční. Další vývoj by se mohl zaměřit na:
-\begin{itemize}
-    \item Implementaci online režimu pro soutěžení hráčů v reálném čase.
-    \item Rozšíření databáze slov a přidání nových tematických okruhů.
-    \item Vylepšení vizuálních efektů a animací.
-    \item Integraci cloudového ukládání progresu pomocí \textbf{Firebase}.
-\end{itemize}
-
-\subsection{Závěrečné hodnocení}
-
-Aplikace \textbf{Šibenice} představuje kvalitní základ pro mobilní vzdělávací hru, která kombinuje zábavu s učením. Díky flexibilní architektuře je možné ji dále rozšiřovat a přizpůsobovat novým požadavkům uživatelů. Tento dokument by měl sloužit jako průvodce pro budoucí údržbu a rozvoj projektu.
 
 \end{document}
+
