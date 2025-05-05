@@ -154,7 +154,7 @@ export default function ProgressScreen() {
             className={`font-bold flex-1 ${textSize} text-white`}
           >
             {node.levelNumber !== undefined
-              ? `Úroveň ${node.levelNumber}${node.stars && node.stars > 0 ? ` – ${node.name}` : ""}`
+              ? `Úroveň ${node.levelNumber}`
               : node.name}
           </Text>
   

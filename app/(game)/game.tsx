@@ -340,8 +340,7 @@ export default function GameScreen() {
               transform: [{ scale: scaleAnim }],
             }}
           >
-            <Icon name="help-outline" size={50} color="#FACC15" />
-            <Text className={`text-xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}>Poradit</Text>
+            <Icon name="help-outline" size={60} color="#FACC15" className="mb-4" />
             <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
               {wordHint}
             </Text>
@@ -366,14 +365,14 @@ export default function GameScreen() {
         <Text className={`text-lg font-semibold ml-2 ${theme === "dark" ? "text-white" : "text-black"}`}>Zpět</Text>
       </TouchableOpacity>
 
-      {/* TLAČÍTKO PRO NÁPOVĚDU */}
+      {/* TLAČÍTKO PRO NÁPOVĚDU K HLEDANÉMU SLOVU */}
       <TouchableOpacity
         onPress={() => setIsHintVisible(true)}
         className="absolute top-14 right-5 bg-yellow-500 px-4 py-2 rounded-full z-50 flex-row items-center"
       >
         <Icon name="help-outline" size={24} color={theme === "dark" ? "black" : "white"} />
         <Text className={`text-lg font-semibold ml-2 ${theme === "dark" ? "text-black" : "text-white"}`}>
-          Nápověda
+          Poradit
         </Text>
       </TouchableOpacity>
 

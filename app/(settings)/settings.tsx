@@ -12,8 +12,6 @@ export default function Settings() {
   const router = useRouter();
 
   // Stav jednotliveho nastaveni
-  const [musicEnabled, setMusicEnabled] = useState(true);
-  const [soundEffectsEnabled, setSoundEffectsEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
   const [theme, setTheme] = useState("dark");
   const [timeLimit, setTimeLimit] = useState("60");
@@ -35,8 +33,6 @@ export default function Settings() {
         const storedTimeLimit = await AsyncStorage.getItem("timeLimit");
         const storedLimitAttempts = await AsyncStorage.getItem("limitAttempts");
 
-        if (storedMusic !== null) setMusicEnabled(storedMusic === "true");
-        if (storedSoundEffects !== null) setSoundEffectsEnabled(storedSoundEffects === "true");
         if (storedVibration !== null) setVibrationEnabled(storedVibration === "true");
         if (storedTheme !== null) setTheme(storedTheme);
         if (storedTimeLimit !== null) setTimeLimit(storedTimeLimit);
@@ -52,8 +48,6 @@ export default function Settings() {
   // Ulozeni aktualniho nastaveni do storage
   const saveSettings = async () => {
     try {
-      await AsyncStorage.setItem("musicEnabled", musicEnabled.toString());
-      await AsyncStorage.setItem("soundEffectsEnabled", soundEffectsEnabled.toString());
       await AsyncStorage.setItem("vibrationEnabled", vibrationEnabled.toString());
       await AsyncStorage.setItem("theme", theme);
       await AsyncStorage.setItem("timeLimit", timeLimit);
@@ -149,20 +143,8 @@ export default function Settings() {
             Nastavení
           </Text>
 
-          {/* PREPINACE: hudba, zvuk, vibrace */}
+          {/* PREPINACE: vibrace */}
           {[
-            {
-              label: "Hudba na pozadí",
-              icon: "music-note",
-              value: musicEnabled,
-              onChange: setMusicEnabled,
-            },
-            {
-              label: "Zvukové efekty",
-              icon: "volume-up",
-              value: soundEffectsEnabled,
-              onChange: setSoundEffectsEnabled,
-            },
             {
               label: "Vibrace",
               icon: "vibration",
