@@ -341,7 +341,7 @@ export default function GameScreen() {
             }}
           >
             <Icon name="help-outline" size={50} color="#FACC15" />
-            <Text className={`text-xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}>Nápověda</Text>
+            <Text className={`text-xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}>Poradit</Text>
             <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
               {wordHint}
             </Text>
