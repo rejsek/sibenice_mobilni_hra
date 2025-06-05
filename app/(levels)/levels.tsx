@@ -130,9 +130,11 @@ export default function LevelSelect() {
                         params: { topic, difficulty, level: levelIndex + 1 },
                       })
                     }
-                    className={`w-40 px-6 py-4 rounded-xl items-center ${
+                    
+                    // Přidáno zarovnání na střed
+                    className={`w-[48%] px-4 py-4 rounded-xl items-center ${
                       theme === "dark" ? "bg-gray-700 shadow-lg shadow-black" : "bg-gray-200"
-                    }`}
+                    } mb-4`}
                   >
                     <Text className={`text-xl font-semibold ${theme === "dark" ? "text-white" : "text-black"}`}>
                       Úroveň {levelIndex + 1}

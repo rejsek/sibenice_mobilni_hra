@@ -16,6 +16,7 @@ export default function Settings() {
   const [theme, setTheme] = useState("dark");
   const [timeLimit, setTimeLimit] = useState("60");
   const [limitAttempts, setLimitAttempts] = useState(false);
+  const [musicEnabled, setMusicEnabled] = useState(true);
 
   // Stav modalu a zmen
   const [isResetModalVisible, setIsResetModalVisible] = useState(false);
@@ -26,17 +27,19 @@ export default function Settings() {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const storedMusic = await AsyncStorage.getItem("musicEnabled");
         const storedSoundEffects = await AsyncStorage.getItem("soundEffectsEnabled");
         const storedVibration = await AsyncStorage.getItem("vibrationEnabled");
         const storedTheme = await AsyncStorage.getItem("theme");
         const storedTimeLimit = await AsyncStorage.getItem("timeLimit");
         const storedLimitAttempts = await AsyncStorage.getItem("limitAttempts");
+        const storedMusic = await AsyncStorage.getItem("musicEnabled");
 
         if (storedVibration !== null) setVibrationEnabled(storedVibration === "true");
         if (storedTheme !== null) setTheme(storedTheme);
         if (storedTimeLimit !== null) setTimeLimit(storedTimeLimit);
         if (storedLimitAttempts !== null) setLimitAttempts(storedLimitAttempts === "true");
+        if (storedMusic !== null) setMusicEnabled(storedMusic === "true");
+
       } catch (error) {
         console.error("Chyba pri nacitani nastaveni:", error);
       }
@@ -52,6 +55,7 @@ export default function Settings() {
       await AsyncStorage.setItem("theme", theme);
       await AsyncStorage.setItem("timeLimit", timeLimit);
       await AsyncStorage.setItem("limitAttempts", limitAttempts.toString());
+      await AsyncStorage.setItem("musicEnabled", musicEnabled.toString());
 
       Alert.alert("Nastavení", "Nastavení bylo úspěšně uloženo.");
       setIsChanged(false);
@@ -150,6 +154,33 @@ export default function Settings() {
               icon: "vibration",
               value: vibrationEnabled,
               onChange: setVibrationEnabled,
+            },
+          ].map(({ label, icon, value, onChange }, index) => (
+            <View
+              key={index}
+              className={`w-full px-6 py-4 rounded-lg mb-4 flex-row items-center ${
+                theme === "dark" ? "bg-gray-800 shadow-md shadow-black" : "bg-gray-200"
+              }`}
+            >
+              <Icon name={icon} size={24} color={theme === "dark" ? "#fff" : "#000"} style={{ marginRight: 10 }} />
+              <Text className={`text-lg flex-1 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>{label}</Text>
+              <Switch
+                value={value}
+                onValueChange={(val) => {
+                  onChange(val);
+                  setIsChanged(true);
+                }}
+              />
+            </View>
+          ))}
+
+          {/* VYBER: hudba */}
+          {[
+            {
+              label: "Hudba",
+              icon: "music-note",
+              value: musicEnabled,
+              onChange: setMusicEnabled,
             },
           ].map(({ label, icon, value, onChange }, index) => (
             <View

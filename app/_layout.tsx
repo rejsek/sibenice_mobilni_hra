@@ -2,6 +2,7 @@ import { Slot, SplashScreen } from "expo-router";
 import "./global.css";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
+import MusicPlayer from "../components/MusicPlayer";
 
 SplashScreen.preventAutoHideAsync()
 
@@ -30,5 +31,12 @@ export default function RootLayout() {
     return null;
   }
 
-  return <Slot />;
+    return (
+    <>
+      {/* → Hudební přehrávač poběží na pozadí všech obrazovek */}
+      <MusicPlayer />
+      {/* → Slot vykreslí aktuální obrazovku ze složky app/ */}
+      <Slot />
+    </>
+  );
 }

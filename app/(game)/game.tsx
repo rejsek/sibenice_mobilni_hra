@@ -7,6 +7,7 @@ import {
   Modal,
   Vibration,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -327,182 +328,299 @@ export default function GameScreen() {
   // -------------------------------------------------
   // ============   Render   =========================
   // -------------------------------------------------
-  return (
-    <SafeAreaView className={`flex-1 px-6 items-center justify-center ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}> 
-    
+return (
+    <SafeAreaView
+      className={`flex-1 px-6 bg-${theme === "dark" ? "gray-800" : "white"}`}
+    >
+      {/* 
+        Tlačítko Zpět (absolutně nahoře vlevo) 
+        - zůstane mimo scroll, zůstane fixované
+      */}
+      <TouchableOpacity
+        onPress={goToLevelSelect}
+        className={`absolute top-14 left-5 px-4 py-2 rounded-full z-50 ${
+          theme === "dark" ? "bg-gray-700" : "bg-gray-300"
+        } flex-row items-center`}
+      >
+        <Icon name="arrow-back" size={24} color={theme === "dark" ? "white" : "black"} />
+        <Text
+          className={`text-lg font-semibold ml-2 ${
+            theme === "dark" ? "text-white" : "text-black"
+          }`}
+        >
+          Zpět
+        </Text>
+      </TouchableOpacity>
+
+      {/*
+        Tlačítko pro zobrazení nápovědy (absolutně nahoře vpravo)
+        - zůstane mimo scroll, zůstane fixované
+      */}
+      <TouchableOpacity
+        onPress={() => setIsHintVisible(true)}
+        className="absolute top-14 right-5 bg-yellow-500 px-4 py-2 rounded-full z-50 flex-row items-center"
+      >
+        <Icon name="help-outline" size={24} color={theme === "dark" ? "black" : "white"} />
+        <Text
+          className={`text-lg font-semibold ml-2 ${
+            theme === "dark" ? "text-black" : "text-white"
+          }`}
+        >
+          Poradit
+        </Text>
+      </TouchableOpacity>
+
+      {/* 
+        Zde začíná ScrollView: obsah, který se může posouvat vertikálně.
+        ScrollView defaultně scrolluje jen vertikálně, horizontální posun je vypnutý.
+      */}
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,              // aby se roztáhl do celé výšky
+          alignItems: "center",     // vycentruje vnitřní View vodorovně
+          paddingTop: 80,           // odsazení shora (aby obsah nezačínal pod tlačítky)
+          paddingBottom: 40,        // odsazení zdola pro pohodlný scroll
+        }}
+        style={{ flex: 1, width: "100%" }}  // ScrollView zabere celý zbytek plochy
+        showsVerticalScrollIndicator={false} 
+      >
+        {/* 
+          Hlavní blok s obsahem, max šířka 400px, vystředěno.
+          Klasická View, tentokrát uvnitř ScrollView.
+        */}
+        <View className="w-full max-w-[400px] items-center">
+          <Text
+            className={`text-3xl font-bold mb-4 ${
+              theme === "dark" ? "text-white" : "text-black"
+            }`}
+          >
+            {topic}
+          </Text>
+          <Text
+            className={`text-lg mb-2 ${
+              theme === "dark" ? "text-gray-400" : "text-gray-600"
+            }`}
+          >
+            Obtížnost: {difficulty}
+          </Text>
+
+          {/* ZOBRAZENÍ ŠIBENICE NEBO ČASU */}
+          {limitAttemptsEnabled && timeLimit === null ? (
+            <View
+              className={`w-full h-48 rounded-lg mb-5 items-center justify-center relative ${
+                theme === "dark" ? "bg-gray-900" : "bg-gray-300"
+              }`}
+            >
+              {/* Základna */}
+              {wrongGuesses.length > 0 && (
+                <View
+                  className={`w-32 h-1 ${poleColor} absolute bottom-2 left-1/2 -translate-x-1/2`}
+                />
+              )}
+              {/* Svislý sloup */}
+              {wrongGuesses.length > 1 && (
+                <View
+                  className={`w-1 h-40 ${poleColor} absolute bottom-2 left-1/3`}
+                />
+              )}
+              {/* Horní trám */}
+              {wrongGuesses.length > 2 && (
+                <View
+                  className={`w-1/4 h-1 ${poleColor} absolute top-6 left-1/3`}
+                />
+              )}
+              {/* Provaz */}
+              {wrongGuesses.length > 3 && (
+                <View
+                  className={`w-1 h-1/4 ${poleColor} absolute top-6 left-52`}
+                />
+              )}
+              {/* Hlava */}
+              {wrongGuesses.length > 4 && (
+                <View
+                  className={`w-6 h-6 ${poleColor} rounded-full absolute top-1/3 left-1/2`}
+                />
+              )}
+              {/* Tělo */}
+              {wrongGuesses.length > 5 && (
+                <View
+                  className={`w-1 h-14 ${poleColor} absolute top-22 left-52`}
+                />
+              )}
+              {/* Levá ruka */}
+              {wrongGuesses.length > 6 && (
+                <View
+                  className={`w-5 h-1 ${poleColor} absolute top-24 left-52 rotate-45`}
+                />
+              )}
+              {/* Pravá ruka */}
+              {wrongGuesses.length > 7 && (
+                <View
+                  className={`w-5 h-1 ${poleColor} absolute top-24 left-48 -rotate-45`}
+                />
+              )}
+              {/* Levá noha */}
+              {wrongGuesses.length > 8 && (
+                <View
+                  className={`w-5 h-1 ${poleColor} absolute top-32 left-52 rotate-45`}
+                />
+              )}
+              {/* Pravá noha */}
+              {wrongGuesses.length > 9 && (
+                <View
+                  className={`w-5 h-1 ${poleColor} absolute top-32 left-48 -rotate-45`}
+                />
+              )}
+            </View>
+          ) : (
+            <View
+              className={`w-full h-48 rounded-lg mb-10 items-center justify-center relative ${
+                theme === "dark" ? "bg-gray-900" : "bg-gray-300"
+              }`}
+            >
+              {timeLimit !== null ? (
+                <Text className="text-red-500 text-9xl font-bold mt-5">
+                  {timeLeft}
+                </Text>
+              ) : (
+                <Text
+                  className={`text-9xl font-bold mt-5 ${
+                    theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                >
+                  {wrongGuesses.length}
+                </Text>
+              )}
+            </View>
+          )}
+
+          <Text
+            className={`text-4xl font-bold tracking-widest mb-6 ${
+              theme === "dark" ? "text-white" : "text-black"
+            }`}
+          >
+            {displayedWord}
+          </Text>
+
+          {/* ABECEDA */}
+          {!isGameOver && !isWinner && (
+            <View className="flex-wrap flex-row justify-center mb-4">
+              {alphabet.map((letter) => {
+                const isGuessed = guessedLetters.includes(letter);
+                const isWrong = wrongGuesses.includes(letter);
+                const isDisabled = isGuessed || isWrong;
+
+                return (
+                  <TouchableOpacity
+                    key={letter}
+                    onPress={() => handleGuess(letter)}
+                    disabled={isDisabled}
+                    className="px-4 py-3 m-1 rounded-lg"
+                    style={{
+                      flexBasis: "12%",
+                      height: 50,
+                      backgroundColor: isGuessed
+                        ? "#22C55E" // Správná odpověď - zelená
+                        : isWrong
+                        ? "#DC2626" // Špatná odpověď - červená
+                        : theme === "dark"
+                        ? "#374151" // Tmavý režim - šedá
+                        : "#D1D5DB", // Světlý režim - světlá šedá
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      className="text-lg font-bold"
+                      style={{
+                        color: isGuessed || isWrong
+                          ? "white"
+                          : theme === "dark"
+                          ? "white"
+                          : "black",
+                      }}
+                    >
+                      {letter}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
+        </View>
+
+        </ScrollView>
+        
+        {/* KONFETY */}
+        {showConfetti && (
+          <ConfettiCannon count={200} origin={{ x: screenWidth / 2, y: 0 }} />
+        )}
+
       {/* MODÁLNÍ OKNO S NÁPOVĚDOU */}
       <Modal visible={isHintVisible || isAnimating} transparent={true} animationType="none">
         <View className="flex-1 justify-center items-center bg-black/70">
           <Animated.View
-            className={`p-6 rounded-lg w-4/5 items-center ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}
+            className={`p-6 rounded-lg w-4/5 items-center ${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            }`}
             style={{
               opacity: opacityAnim,
               transform: [{ scale: scaleAnim }],
             }}
           >
             <Icon name="help-outline" size={60} color="#FACC15" className="mb-4" />
-            <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+            <Text
+              className={`text-lg mb-6 text-center ${
+                theme === "dark" ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
               {wordHint}
             </Text>
             <TouchableOpacity
               className="bg-blue-600 px-4 py-2 rounded-lg flex-row items-center"
               onPress={() => setIsHintVisible(false)}
             >
-              <Text className="text-white text-lg font-semibold text-center ml-2">Rozumím</Text>
+              <Text className="text-white text-lg font-semibold text-center ml-2">
+                Rozumím
+              </Text>
             </TouchableOpacity>
           </Animated.View>
         </View>
       </Modal>
 
-      {/* TLAČÍTKO ZPĚT */}
-      <TouchableOpacity
-        onPress={goToLevelSelect}
-        className={`absolute top-14 left-5 px-4 py-2 rounded-full z-50 flex-row items-center ${
-          theme === "dark" ? "bg-gray-700" : "bg-gray-300"
-        }`}
-      >
-        <Icon name="arrow-back" size={24} color={theme === "dark" ? "white" : "black"} />
-        <Text className={`text-lg font-semibold ml-2 ${theme === "dark" ? "text-white" : "text-black"}`}>Zpět</Text>
-      </TouchableOpacity>
-
-      {/* TLAČÍTKO PRO NÁPOVĚDU K HLEDANÉMU SLOVU */}
-      <TouchableOpacity
-        onPress={() => setIsHintVisible(true)}
-        className="absolute top-14 right-5 bg-yellow-500 px-4 py-2 rounded-full z-50 flex-row items-center"
-      >
-        <Icon name="help-outline" size={24} color={theme === "dark" ? "black" : "white"} />
-        <Text className={`text-lg font-semibold ml-2 ${theme === "dark" ? "text-black" : "text-white"}`}>
-          Poradit
-        </Text>
-      </TouchableOpacity>
-
-      <View className="w-full max-w-[400px] items-center top-8">
-        <Text className={`text-3xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}>{topic}</Text>
-        <Text className={`text-lg mb-2 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>Obtížnost: {difficulty}</Text>
-
-        {/* ZOBRAZENÍ ŠIBENICE NEBO ČASU */}
-        {limitAttemptsEnabled && timeLimit === null ? (
-          <View className={`w-full h-48 rounded-lg mb-10 items-center justify-center relative top-3 ${theme === "dark" ? "bg-gray-900" : "bg-gray-300"}`}>           
-              {/* Základna */}
-              {wrongGuesses.length > 0 && (
-                <View className={`w-32 h-1 ${poleColor} absolute bottom-2 left-1/2 -translate-x-1/2`} />
-              )}
-              {/* Svislý sloup */}
-              {wrongGuesses.length > 1 && (
-                <View className={`w-1 h-40 ${poleColor} absolute bottom-2 left-1/3`} />
-              )}
-              {/* Horní trám */}
-              {wrongGuesses.length > 2 && (
-                <View className={`w-1/4 h-1 ${poleColor} absolute top-6 left-1/3`} />
-              )}
-              {/* Provaz */}
-              {wrongGuesses.length > 3 && (
-                <View className={`w-1 h-1/4 ${poleColor} absolute top-6 left-52`} />
-              )}
-              {/* Hlava */}
-              {wrongGuesses.length > 4 && (
-                <View className={`w-6 h-6 ${poleColor} rounded-full absolute top-1/3 left-1/2`} />
-              )}
-              {/* Tělo */}
-              {wrongGuesses.length > 5 && (
-                <View className={`w-1 h-14 ${poleColor} absolute top-22 left-52`} />
-              )}
-              {/* Levá ruka */}
-              {wrongGuesses.length > 6 && (
-                <View className={`w-5 h-1 ${poleColor} absolute top-24 left-52 rotate-45`} />
-              )}
-              {/* Pravá ruka */}
-              {wrongGuesses.length > 7 && (
-                <View className={`w-5 h-1 ${poleColor} absolute top-24 left-48 -rotate-45`} />
-              )}
-              {/* Levá noha */}
-              {wrongGuesses.length > 8 && (
-                <View className={`w-5 h-1 ${poleColor} absolute top-32 left-52 rotate-45`} />
-              )}
-              {/* Pravá noha */}
-              {wrongGuesses.length > 9 && (
-                <View className={`w-5 h-1 ${poleColor} absolute top-32 left-48 -rotate-45`} />
-              )}
-          </View>
-
-        ) : (
-          <View className={`w-full h-48 rounded-lg mb-10 items-center justify-center relative top-3 ${theme === "dark" ? "bg-gray-900" : "bg-gray-300"}`}> 
-            {timeLimit !== null ? (
-              <Text className="text-red-500 text-9xl font-bold mt-5">{timeLeft}</Text>
-            ) : (
-              <Text className={`text-9xl font-bold mt-5 ${theme === "dark" ? "text-white" : "text-black"}`}>
-                {wrongGuesses.length}
-              </Text>
-
-            )}
-          </View>
-        )}
-
-        <Text className={`text-4xl font-bold tracking-widest mb-6 ${theme === "dark" ? "text-white" : "text-black"}`}>
-          {displayedWord}
-        </Text>
-
-      {/* ABECEDA */}
-      {!isGameOver && !isWinner && (
-        <View className="flex-wrap flex-row justify-center mb-4">
-          {alphabet.map((letter) => {
-            const isGuessed = guessedLetters.includes(letter);
-            const isWrong = wrongGuesses.includes(letter);
-            const isDisabled = isGuessed || isWrong;
-        
-            return (
-              <TouchableOpacity
-                key={letter}
-                onPress={() => handleGuess(letter)}
-                disabled={isDisabled}
-                className="px-4 py-3 m-1 rounded-lg"
-                style={{
-                  flexBasis: "12%",
-                  height: 50,
-                  backgroundColor: isGuessed
-                    ? "#22C55E" // Správná odpověď - zelená
-                    : isWrong
-                    ? "#DC2626" // Špatná odpověď - červená
-                    : theme === "dark"
-                    ? "#374151" // Tmavý režim - šedá
-                    : "#D1D5DB", // Světlý režim - světlá šedá
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text
-                  className="text-lg font-bold"
-                  style={{
-                    color: isGuessed || isWrong ? "white" : theme === "dark" ? "white" : "black",
-                  }}
-                >
-                  {letter}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>        
-        )}
-      </View>
-
-      {/* KONFETY */}
-      {showConfetti && (
-        <ConfettiCannon count={200} origin={{ x: screenWidth / 2, y: 0 }} />
-      )}
-
       {/* MODÁLNÍ OKNO - VÝHRA */}
       <Modal visible={isWinner} animationType="fade" transparent={true}>
         <View className="flex-1 justify-center items-center bg-black/70">
-          <View className={`p-6 rounded-lg w-4/5 ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
-            <Text className="text-green-600 text-2xl font-bold mb-4 text-center">🎉 Gratulace!</Text>
-            <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+          <View
+            className={`p-6 rounded-lg w-4/5 ${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            }`}
+          >
+            <Text className="text-green-600 text-2xl font-bold mb-4 text-center">
+              🎉 Gratulace!
+            </Text>
+            <Text
+              className={`text-lg mb-6 text-center ${
+                theme === "dark" ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
               Vyhrál jsi! Slovo bylo "{targetWord}".
             </Text>
-            <TouchableOpacity className="bg-blue-600 px-4 py-2 rounded-lg mb-2" onPress={restartGame}>
-              <Text className="text-white text-lg font-semibold text-center">Hrát znovu</Text>
+            <TouchableOpacity
+              className="bg-blue-600 px-4 py-2 rounded-lg mb-2"
+              onPress={restartGame}
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Hrát znovu
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity className="bg-gray-600 px-4 py-2 rounded-lg" onPress={goToLevelSelect}>
-              <Text className="text-white text-lg font-semibold text-center">Zpět do menu</Text>
+            <TouchableOpacity
+              className="bg-gray-600 px-4 py-2 rounded-lg"
+              onPress={goToLevelSelect}
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Zpět do menu
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -511,16 +629,36 @@ export default function GameScreen() {
       {/* MODÁLNÍ OKNO - PROHRA */}
       <Modal visible={isGameOver} animationType="fade" transparent={true}>
         <View className="flex-1 justify-center items-center bg-black/70">
-          <View className={`p-6 rounded-lg w-4/5 ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
-            <Text className="text-red-600 text-2xl font-bold mb-4 text-center">❌ Prohra!</Text>
-            <Text className={`text-lg mb-6 text-center ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+          <View
+            className={`p-6 rounded-lg w-4/5 ${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            }`}
+          >
+            <Text className="text-red-600 text-2xl font-bold mb-4 text-center">
+              ❌ Prohra!
+            </Text>
+            <Text
+              className={`text-lg mb-6 text-center ${
+                theme === "dark" ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
               Prohrál jsi! Zkus to znovu.
             </Text>
-            <TouchableOpacity className="bg-yellow-600 px-4 py-2 rounded-lg mb-2" onPress={restartGame}>
-              <Text className="text-white text-lg font-semibold text-center">Zkusit znovu</Text>
+            <TouchableOpacity
+              className="bg-yellow-600 px-4 py-2 rounded-lg mb-2"
+              onPress={restartGame}
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Zkusit znovu
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity className="bg-gray-600 px-4 py-2 rounded-lg" onPress={goToLevelSelect}>
-              <Text className="text-white text-lg font-semibold text-center">Zpět do menu</Text>
+            <TouchableOpacity
+              className="bg-gray-600 px-4 py-2 rounded-lg"
+              onPress={goToLevelSelect}
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Zpět do menu
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
