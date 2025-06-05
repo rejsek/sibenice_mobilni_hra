@@ -6,16 +6,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
  * Hudební přehrávač na pozadí - načte a přehraje hudbu v nekonečné smyčce
  */
 export default function MusicPlayer() {
-  // Reference na objekt Audio.Sound pro ovládání přehrávání
   const soundRef = useRef<Audio.Sound | null>(null);
-  // Poslední načtená hodnota nastavení hudby (true = zapnuto, false = vypnuto)
   const [lastSetting, setLastSetting] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Proměnná pro interval polling-u (telefon vrací číslo, nikoli NodeJS.Timer)
     let pollInterval: number;
 
-    // Inicializační funkce pro načtení a spuštění/pauzu hudby
     const initialize = async () => {
       try {
         // ------------------------------------
@@ -33,8 +29,8 @@ export default function MusicPlayer() {
         // Načtení zvukové stopy jednorázově
         // ------------------------------------
         const { sound } = await Audio.Sound.createAsync(
-          require("../assets/music/background.mp3"), // cesta k hudebnímu souboru
-          { isLooping: true, volume: 0.5 }          // přehrávat v nekonečné smyčce
+          require("../assets/music/background.mp3"),
+          { isLooping: true, volume: 0.5 }
         );
         soundRef.current = sound;
 
@@ -91,6 +87,5 @@ export default function MusicPlayer() {
     };
   }, [lastSetting]);
 
-  // Komponent nevrací žádné UI
   return null;
 }
